@@ -23,13 +23,17 @@ setup(
 
 
 
+
+
+
+
 '''
 note: How to make library
 - 모두 seqC -> py로 저장.
 
 - cmd (administrator) -> cd repository
 - python setup.py sdist bdist_wheel
-- twine upload dist/*
+- twine upload dist/* -u __token__ -p pypi-AgEIcHlwaS5vcmcCJGQxM2I1ZTBlLWY3ZjMtNDIxOC1iNmI1LTk5ZGZkNjJiN2Q5ZAACKlszLCIyYjI3OWNjMi1lYjE1LTQ3YTgtYTA3YS0zZjM5ZGIwOWMxZDEiXQAABiA2ONm4ctkMfcPIApwZNJOb1Dw4sm6X5MJ6vNTB2Gl-dg
 - 업데이트시에는 setup.py -> 0.02로 하고 다시 위 과정 반복
 
 

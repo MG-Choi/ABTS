@@ -1,0 +1,9 @@
+tqdm
+numpy
+pandas
+shapely>=2.0.2
+pyproj>=3.3.0
+geopandas>=0.14.0
+networkx>=3.2.1
+osmnx>=1.7.1
+geopy>=2.2.0
