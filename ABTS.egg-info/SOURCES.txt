@@ -8,3 +8,14 @@ ABTS.egg-info/SOURCES.txt
 ABTS.egg-info/dependency_links.txt
 ABTS.egg-info/requires.txt
 ABTS.egg-info/top_level.txt
+ABTS/data/cbg_milwaukee.cpg
+ABTS/data/cbg_milwaukee.dbf
+ABTS/data/cbg_milwaukee.prj
+ABTS/data/cbg_milwaukee.sbn
+ABTS/data/cbg_milwaukee.sbx
+ABTS/data/cbg_milwaukee.shp
+ABTS/data/cbg_milwaukee.shp.xml
+ABTS/data/cbg_milwaukee.shx
+ABTS/data/prob_2020_09_combined.xlsx
+ABTS/data/repaired_NHTS.csv
+ABTS/data/trip_mode_prop_all.csv

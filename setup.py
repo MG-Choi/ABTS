@@ -41,6 +41,7 @@ note: How to make library
 - twine upload dist/* -u __token__ -p pypi-asdadsdas-adwdas
 - 업데이트시에는 setup.py -> 0.02로 하고 다시 위 과정 반복
 
+twine upload dist/* -u __token__ -p pypi-AgEIcHlwaS5vcmcCJGFlNWUwNjJjLThlZWQtNGU4NS1iNzAyLTE4MTBmZDQyODg3YQACDFsxLFsiYWJ0cyJdXQACLFsyLFsiN2I4MmM2MDctMmRlNi00Y2Y4LThjMTAtZjYxOWEzOWI1YTc0Il1dAAAGII4cDXlZKtdlWdTLJaVtkFp3fEuxUsG1Cnby0gdy1Jw-
 
 library test는 cmd에서 한다.
 
