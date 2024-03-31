@@ -2,13 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'ABTS',
-    version = '0.0.1',
+    version = '0.0.3',
     description = "algorithm for Agent Based Travel Scheduler",
     url = 'https://github.com/MG-Choi/ABTS',
     author = 'MoongiChoi',
     author_email = 'u1316663@utah.edu',
     packages = find_packages(),
-    package_data = {'ABTS': ['sampleData/concatenated_df.csv', 'sampleData/O1.txt', 'sampleData/O2.txt', 'sampleData/O3.txt']},
+    package_data = {'ABTS': ['data/cbg_milwaukee.cpg', 'data/cbg_milwaukee.dbf', 'data/cbg_milwaukee.prj', 'data/cbg_milwaukee.sbn',
+                            'data/cbg_milwaukee.sbx', 'data/cbg_milwaukee.shp', 'data/cbg_milwaukee.shp.xml', 'data/cbg_milwaukee.shx',
+                            'data/prob_2020_09_combined.xlsx', 'data/repaired_NHTS.csv', 'data/trip_mode_prop_all.csv']},
     include_package_data = True,
     install_requires = ['tqdm',
                         'numpy',
@@ -33,7 +35,10 @@ note: How to make library
 
 - cmd (administrator) -> cd repository
 - python setup.py sdist bdist_wheel
-- twine upload dist/* -u __token__ -p pypi-AgEIcHlwaS5vcmcCJGQxM2I1ZTBlLWY3ZjMtNDIxOC1iNmI1LTk5ZGZkNjJiN2Q5ZAACKlszLCIyYjI3OWNjMi1lYjE1LTQ3YTgtYTA3YS0zZjM5ZGIwOWMxZDEiXQAABiA2ONm4ctkMfcPIApwZNJOb1Dw4sm6X5MJ6vNTB2Gl-dg
+
+- 이후 upload를 위해 https://pypi.org/manage/account/token/ 여기서 token을 받아야함. 그리고 밑에 처럼 토큰을 입력.
+- 예로 토큰이 pypi-asdadsdas-adwdas 라면
+- twine upload dist/* -u __token__ -p pypi-asdadsdas-adwdas
 - 업데이트시에는 setup.py -> 0.02로 하고 다시 위 과정 반복
 
 

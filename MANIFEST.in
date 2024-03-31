@@ -1,4 +1,11 @@
+recursive-include data/cbg_milwaukee.cpg
+recursive-include data/cbg_milwaukee.dbf
+recursive-include data/cbg_milwaukee.prj
+recursive-include data/cbg_milwaukee.sbn
+recursive-include data/cbg_milwaukee.sbx
 recursive-include data/cbg_milwaukee.shp
+recursive-include data/cbg_milwaukee.shp.xml
+recursive-include data/cbg_milwaukee.shx
 recursive-include data/prob_2020_09_combined.xlsx
 recursive-include data/repaired_NHTS.csv
 recursive-include data/trip_mode_prop_all.csv

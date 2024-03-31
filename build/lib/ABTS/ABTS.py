@@ -3371,7 +3371,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(current_directory)
 
 
-
+dataPath = "./data/"
 prob_2020_09_combined = pd.read_excel(dataPath + 'prob_2020_09_combined.xlsx') # Combined Probability of travels from O to D in Sep, 2020
 repaired_NHTS = pd.read_csv(dataPath + 'repaired_NHTS.csv') # preprocessed NHTS
 trip_mode = pd.read_csv(dataPath + 'trip_mode_prop_all.csv') # trip mode
