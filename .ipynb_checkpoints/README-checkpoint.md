@@ -161,14 +161,12 @@ display(neighbor_2020_09_OD.heaD())
 
 
 #### 0.2.2. Computing probability of trips from origin cbg to dest cbg
-
+###### Computes the probability of moving from an origin CBG to a destination CBG, factoring in the spatial attractiveness weight (W_s) and the distance sensitivity index (W_d) - Refer to Eqution 10.
 
 ```python
 prob_trips_2020_09_ws05_wd025 = compute_probabilityByk_Ws_Wd(neighbor_2020_09_OD, landUse, W_s = 0.5, W_d = 0.25)
 display(prob_trips_2020_09_ws05_wd025.head())
 ```
-
-여기 할 차례. 여기는 굳이 결과를 보여주지 않아도 됌.
 
 
 #### 0.2.3. Combine all probability tables by their month
