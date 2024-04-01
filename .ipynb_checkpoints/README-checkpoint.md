@@ -37,6 +37,8 @@ ABTS / version 0.0.3
 ###### 여기서는 Individual travel schedule generator의 과정을 예제 데이터를 통해 돌려보도록 한다. case area는 Milwaukee County이고 2020년 9월 과거의 travel을 trip purpose별, age별로 decompose하고, 예측하는 과정을 보여주겠다.
 
 
+---
+
 ## 0. Preprocessing (using sample simulation in library)
 
 ###### 여기서는 ABTS모델을 run하기 위해 NHTS data와 SafeGraph data를 preprocessing하는 과정을 보여준다. 원본 데이터의 경우 밑에 기술된 두 홈페이지에서 다운받을 수 있으며, 본 example에서 사용되는 데이터 역시 해당 사이트에서 다운 받은 데이터이다. 하지만 SafeGraph Neighborhood 데이터의 경우, 현재 타 소스에서 제공되고 있는 것으로 보이며 여전히 접근 가능하다.
@@ -196,7 +198,10 @@ display(prob_2020_09_combined.head())
 
 - output dataframe은 weekday와 weekend의 trip purpose별 각 destination으로 갈 확률을 exhibit한다. dataframe의 각 칸의 key는 destination CBG, value는 확률을 의미한다. 이 정해진 확률값은 추후 destination을 결정하는데 사용된다.
 
-# --------------------------
+
+
+---
+
 
 ## 1. Execution for ABTS
 
