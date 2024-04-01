@@ -17,17 +17,23 @@ ABTS / version 0.0.3
 - Choi, M., Seo, J., & Hohl. A. (2024). ABTS: Agent-Based Travel Scheduler. In process
 
 
-###### Figure 1 shows the framework of ABTS. 
-
+###### Figure 1 shows the framework of ABTS. ABTS utilizes a three-step process to generate the initial outcome of individual travel schedules: 1) Comprehensive Travel Classifier, 2) Land-Use Estimator, and 3) Individual Travel Schedule. The output of ABTS includes individual daily trip chains that consists of each trip purpose, occurrence time, destination, duration, and mode, tailored according to age group.
 
 ![Figure1. Framework_of_ABTS](/ABTS/image/Figure1_Framework_of_ABTS.png)
 
-Figure1_Framework_of_ABTS.png 넣기. 그리고 간단히 설명하는데 Classification_method_in_ABTS.png하고 Data_description.png넣기
-
-###### area는 Milwaukee이고 2020년 9월을 예로 하였음.
+###### Comprehensive travel classifier에서는 Table 1과 같이 trip purpose와 trip mode, Age group을 각각의 기준으로 classify한다. 예로 trip purpose는 9개의 Major trip purpose와 13개의 Sub trip purpose로 나눠진다.
 
 
+![Table 1. Classification in ABTS](/ABTS/image/Classification_method_in_ABTS.png)
 
+
+
+
+# Run the model with example data
+
+###### 여기서는 Individual travel schedule generator의 과정을 예제 데이터를 통해 돌려보도록 한다. case area는 Milwaukee이고 2020년 9월의 travel을 예측하는 과정을 보여주겠다.
+
+##### 여기에 Data description
 
 ## 0. Preprocessing (using sample simulation in library)
 
