@@ -27,10 +27,6 @@ ABTS / version 0.0.3
     <img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="650"/>
 </div>
 
-<div class="center">
-    <img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="650"/>
-</div>
-
 
 ###### Land-Use estimator에서는 landuse 데이터를 생성한다. 우리는 landuse를 Table 1의 Sub trip purpose와 같이 13개의 category로 구분하여 shp파일로 구축하였다. 데이터의 출처는 밑의 0. Preprocessing 단계에 기술되어 있다.
 
@@ -52,15 +48,33 @@ ABTS / version 0.0.3
 
 ### 0.0. Data import
 
-###### 구글 드라이브에 데이터를 업로드 해 놓았다 (밑 링크). 여기 데이터에는 다음과 같은 데이터가 있다. https://drive.google.com/drive/folders/1YlsNPeTIC-0hjgYNnatuhmIGWQVSvg0-?usp=sharing 
+###### 구글 드라이브에 원본 데이터를 업로드 해 놓았다 (밑 링크). 여기 데이터에는 다음과 같은 데이터가 있다. https://drive.google.com/drive/folders/1YlsNPeTIC-0hjgYNnatuhmIGWQVSvg0-?usp=sharing 
 
-- trippub.csv: NHTS data (2017)
-- Milwaukee_parcels.shp: Milwaukee landuse data
-- neighbor_2020_09.csv: SafeGraph Neighborhood data in Milwaukee (2020/09)
+- 'trippub.csv': NHTS data (2017)
+- 'Milwaukee_parcels.shp': Milwaukee landuse data
+- 'neighbor_2020_09.csv': SafeGraph Neighborhood data in Milwaukee (2020/09)
 
-
+``` python
+path = "[Your Path where you save three datasets]"
+trippub = pd.read_csv(path + 'trippub.csv') # NHTS
+neighbor_2020_09 =  pd.read_csv(path + 'neighbor_2020_09.csv') # SafeGraph
+landUse = gpd.read_file(path + 'Milwaukee_parcels.shp') # Landuse
+```
 
 ### 0.1. Preprocess NHTS data
+##### This function reorganizes the NHTS dataset by selecting columns for analysis, mapping certain categorical codes to more meaningful values, and introducing new columns to better represent the data. It focuses on clarifying trip purposes, transportation modes, and travel days based on NHTS coding schemes.
+
+```python
+trippub_organized = organize_columns(trippub, print_progress = True)
+```
+
+|    |   HOUSEID |   PERSONID |   PERSONID_new |   HHSTFIPS |   R_AGE_IMP | R_AGE_new   |   WHYFROM |   WHYTO |   TRPMILES |   DWELTIME |   STRTTIME |   ENDTIME |   TRAVDAY | TRAVDAY_new   |   TDAYDATE | TRPPURP_new   | TRPTRANS_new   |
+|---:|----------:|-----------:|---------------:|-----------:|------------:|:------------|----------:|--------:|-----------:|-----------:|-----------:|----------:|----------:|:--------------|-----------:|:--------------|:---------------|
+|  0 |  30000007 |          1 |      300000071 |         37 |          67 | Seniors     |         1 |      19 |      5.244 |        295 |       1000 |      1015 |         2 | Weekday       |     201608 | S_d_r         | Car            |
+|  1 |  30000007 |          1 |      300000071 |         37 |          67 | Seniors     |        19 |       1 |      5.149 |         -9 |       1510 |      1530 |         2 | Weekday       |     201608 | Home          | Car            |
+|  2 |  30000007 |          2 |      300000072 |         37 |          66 | Seniors     |         3 |       1 |     84.004 |        540 |        700 |       900 |         2 | Weekday       |     201608 | Home          | Car            |
+|  3 |  30000007 |          2 |      300000072 |         37 |          66 | Seniors     |         1 |       3 |     81.628 |         -9 |       1800 |      2030 |         2 | Weekday       |     201608 | Work          | Car            |
+|  4 |  30000007 |          3 |      300000073 |         37 |          28 | Adult       |         1 |       8 |      2.25  |        330 |        845 |       900 |         2 | Weekday       |     201608 | S_d_r         | Car            |
 
 
 ### 0.2. Preprocess SafeGraph data
