@@ -23,8 +23,10 @@ ABTS / version 0.0.3
 
 ###### Comprehensive travel classifier에서는 Table 1과 같이 trip purpose와 trip mode, Age group을 각각의 기준으로 classify한다. 예로 trip purpose는 9개의 Major trip purpose와 13개의 Sub trip purpose로 나눠진다.
 
+<div style="text-align: center;">
+    <img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="650"/>
+</div>
 
-<img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="450"/>
 
 
 ###### Land-Use estimator에서는 landuse 데이터를 생성한다. 우리는 landuse를 Table 1의 Sub trip purpose와 같이 13개의 category로 구분하여 shp파일로 구축하였다. 데이터의 출처는 밑의 0. Preprocessing 단계에 기술되어 있다.
