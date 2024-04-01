@@ -196,6 +196,7 @@ display(prob_2020_09_combined.head())
 
 - output dataframe은 weekday와 weekend의 trip purpose별 각 destination으로 갈 확률을 exhibit한다. dataframe의 각 칸의 key는 destination CBG, value는 확률을 의미한다. 이 정해진 확률값은 추후 destination을 결정하는데 사용된다.
 
+# --------------------------
 
 ## 1. Execution for ABTS
 
