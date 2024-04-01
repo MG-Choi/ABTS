@@ -8,6 +8,7 @@ ABTS / version 0.0.3
 
 ```python
 !pip install ABTS
+import ABTS as abts
 ```
 
 ###### 이 알고리즘은 개개인의 travel schedule을 예측하는 시뮬레이션으로, ABTS (Agent-Based Travel Scheduler)이다. 파라미터 4가지를 이용하여 예측을 하며, 기존의 OD데이터를 이용하여 과거의 travel을 trip purpose, age 별로 decompose할 수 있고, 미래 예측 역시 가능하다. 모델에 대한 더 자세한 description은 다음의 두 논문에서 찾을 수 있다.
@@ -67,7 +68,7 @@ landUse = gpd.read_file(path + 'Milwaukee_parcels.shp') # Landuse
 ###### This function reorganizes the NHTS dataset by selecting columns for analysis, mapping certain categorical codes to more meaningful values, and introducing new columns to better represent the data. It focuses on clarifying trip purposes, transportation modes, and travel days based on NHTS coding schemes.
 
 ```python
-trippub_organized = organize_columns(trippub, print_progress = True)
+trippub_organized = abts.organize_columns(trippub, print_progress = True)
 display(trippub_organized.head())
 ```
 
@@ -91,7 +92,7 @@ display(trippub_organized.head())
 
 
 ```python
-repaired_NHTS = preprocess_NHTS(trippub_organized, print_progress = True) # will take long time
+repaired_NHTS = abts.preprocess_NHTS(trippub_organized, print_progress = True) # will take long time
 repaired_NHTS.to_csv('[yourPath]' + 'repaired_NHTS.csv') # save
 display(repaired_NHTS.head())
 ```
@@ -123,7 +124,7 @@ display(repaired_NHTS.head())
 ###### Processes the NHTS dataset to create a new trip purpose category and calculates the probability of trip mode choices by age and newly defined trip purpose. This function aims to simplify the analysis of trip behaviors across different demographics and trip purposes by mapping detailed purposes into broader categories.
 
 ```python
-trip_mode_prop_all = preprocess_NHTS_tripMode(trippub_organized) 
+trip_mode_prop_all = abts.preprocess_NHTS_tripMode(trippub_organized) 
 trip_mode_prop_all.to_csv('[yourPath]' + 'trip_mode_prop_all.csv')  # save
 display(trip_mode_prop_all.head())
 ```
@@ -145,7 +146,7 @@ display(trip_mode_prop_all.head())
 ###### Converts Destination-Origin (DO) data into Origin-Destination (OD) data using the input SafeGraph Neighborhood data. The function processes columns related to work behavior and device home areas during weekdays and weekends, transforming them into a format that specifies how many devices move from one area to another.
 
 ```python
-neighbor_2020_09_OD = DOtoOD(neighbor_2020_09, print_progress = True)
+neighbor_2020_09_OD = abts.DOtoOD(neighbor_2020_09, print_progress = True)
 display(neighbor_2020_09_OD.heaD())
 ```
 
@@ -168,7 +169,7 @@ display(neighbor_2020_09_OD.heaD())
 
 
 ```python
-prob_trips_2020_09_ws05_wd025 = compute_probabilityByk_Ws_Wd(neighbor_2020_09_OD, landUse, W_s = 0.5, W_d = 0.25)
+prob_trips_2020_09_ws05_wd025 = abts.compute_probabilityByk_Ws_Wd(neighbor_2020_09_OD, landUse, W_s = 0.5, W_d = 0.25)
 display(prob_trips_2020_09_ws05_wd025.head())
 ```
 
@@ -183,7 +184,7 @@ display(prob_trips_2020_09_ws05_wd025.head())
 ###### Fills empty probability distributions for trip purposes in a row of a input DataFrame with alternative values based on a predefined hierarchy of preferences. This ensures that each trip purpose category has a valid probability distribution, either specific or borrowed from a related category.
 
 ```python
-prob_2020_09_combined = prob_2020_09_combined.apply(fill_values, axis = 1)
+prob_2020_09_combined = abts.prob_2020_09_combined.apply(fill_values, axis = 1)
 prob_2020_09_combined.to_csv('[yourPath]' + 'prob_2020_09_combined.xlsx') # save
 display(prob_2020_09_combined.head())
 ```
@@ -207,6 +208,14 @@ display(prob_2020_09_combined.head())
 ### 1.0. Data import
 
 ###### 데이터 import
+
+```python
+import ABTS as abts
+```
+
+데이터 앞과 function앞에 abts. 붙이는 것 잊지 말기.
+
+
 
 
 ### 1.1. Trip Occurence Builder
