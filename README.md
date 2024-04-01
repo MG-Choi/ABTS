@@ -17,7 +17,12 @@ ABTS / version 0.0.3
 - Choi, M., Seo, J., & Hohl. A. (2024). ABTS: Agent-Based Travel Scheduler. In process
 
 
-###### Figure1_Framework_of_ABTS.png 넣기. 그리고 간단히 설명하는데 Classification_method_in_ABTS.png하고 Data_description.png넣기
+###### Figure 1 shows the framework of ABTS. 
+
+
+![Figure1. Framework_of_ABTS](/ABTS/image/Figure1_Framework_of_ABTS.png)
+
+Figure1_Framework_of_ABTS.png 넣기. 그리고 간단히 설명하는데 Classification_method_in_ABTS.png하고 Data_description.png넣기
 
 ###### area는 Milwaukee이고 2020년 9월을 예로 하였음.
 
