@@ -24,7 +24,8 @@ ABTS / version 0.0.3
 ###### Comprehensive travel classifier에서는 Table 1과 같이 trip purpose와 trip mode, Age group을 각각의 기준으로 classify한다. 예로 trip purpose는 9개의 Major trip purpose와 13개의 Sub trip purpose로 나눠진다.
 
 
-![Table 1. Classification in ABTS](/ABTS/image/Classification_method_in_ABTS.png)
+<img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="450"/>
+
 
 ###### Land-Use estimator에서는 landuse 데이터를 생성한다. 우리는 landuse를 Table 1의 Sub trip purpose와 같이 13개의 category로 구분하여 shp파일로 구축하였다. 데이터의 출처는 밑의 0. Preprocessing 단계에 기술되어 있다.
 
@@ -46,7 +47,12 @@ ABTS / version 0.0.3
 
 ### 0.0. Data import
 
-###### 구글 드라이브에서 데이터 
+###### 구글 드라이브에 데이터를 업로드 해 놓았다 (밑 링크). 여기 데이터에는 다음과 같은 데이터가 있다. https://drive.google.com/drive/folders/1YlsNPeTIC-0hjgYNnatuhmIGWQVSvg0-?usp=sharing 
+
+- trippub.csv: NHTS data (2017)
+- Milwaukee_parcels.shp: Milwaukee landuse data
+- neighbor_2020_09.csv: SafeGraph Neighborhood data in Milwaukee (2020/09)
+
 
 
 ### 0.1. Preprocess NHTS data
