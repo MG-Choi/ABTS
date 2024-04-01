@@ -10,7 +10,12 @@ ABTS / version 0.0.3
 !pip install ABTS
 ```
 
-###### 이 알고리즘은 ~
+###### 이 알고리즘은 개개인의 travel schedule을 예측하는 시뮬레이션으로, ABTS (Agent-Based Travel Scheduler)이다. 파라미터 4가지를 이용하여 예측을 하며, 기존의 OD데이터를 이용하여 과거의 travel을 trip purpose, age 별로 decompose할 수 있고, 미래 예측 역시 가능하다. 자세한 사항은 다음의 두 논문에서 찾을 수 있다.
+
+- Choi, M., & Hohl. A. (2024). Derivation of Spatiotemporal Risk Areas and Travel Behaviors During Pandemic Through Reverse Estimation of Mobility Patterns by Agent-Based Modeling, Spatial and Spatio-temporal Epidemiology. Under review (1st round)
+
+- Choi, M., Seo, J., & Hohl. A. (2024). ABTS: Agent-Based Travel Scheduler. In process
+
 
 ###### Figure1_Framework_of_ABTS.png 넣기. 그리고 간단히 설명하는데 Classification_method_in_ABTS.png하고 Data_description.png넣기
 
