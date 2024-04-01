@@ -52,20 +52,22 @@ ABTS / version 0.0.3
 
 - 'trippub.csv': NHTS data (2017)
 - 'Milwaukee_parcels.shp': Milwaukee landuse data
-- 'neighbor_2020_09.csv': SafeGraph Neighborhood data in Milwaukee (2020/09)
+- 'neighbor_2020_09.xlsx': SafeGraph Neighborhood data in Milwaukee (2020/09)
 
 ``` python
 path = "[Your Path where you save three datasets]"
 trippub = pd.read_csv(path + 'trippub.csv') # NHTS
-neighbor_2020_09 =  pd.read_csv(path + 'neighbor_2020_09.csv') # SafeGraph
+neighbor_2020_09 =  pd.read_excel(path + 'neighbor_2020_09.xlsx') # SafeGraph
 landUse = gpd.read_file(path + 'Milwaukee_parcels.shp') # Landuse
 ```
 
 ### 0.1. Preprocess NHTS data
-##### This function reorganizes the NHTS dataset by selecting columns for analysis, mapping certain categorical codes to more meaningful values, and introducing new columns to better represent the data. It focuses on clarifying trip purposes, transportation modes, and travel days based on NHTS coding schemes.
+#### 0.1.1. Organize columns of NHTS data
+###### This function reorganizes the NHTS dataset by selecting columns for analysis, mapping certain categorical codes to more meaningful values, and introducing new columns to better represent the data. It focuses on clarifying trip purposes, transportation modes, and travel days based on NHTS coding schemes.
 
 ```python
 trippub_organized = organize_columns(trippub, print_progress = True)
+display(trippub_organized.head())
 ```
 
 |    |   HOUSEID |   PERSONID |   PERSONID_new |   HHSTFIPS |   R_AGE_IMP | R_AGE_new   |   WHYFROM |   WHYTO |   TRPMILES |   DWELTIME |   STRTTIME |   ENDTIME |   TRAVDAY | TRAVDAY_new   |   TDAYDATE | TRPPURP_new   | TRPTRANS_new   |
@@ -76,8 +78,114 @@ trippub_organized = organize_columns(trippub, print_progress = True)
 |  3 |  30000007 |          2 |      300000072 |         37 |          66 | Seniors     |         1 |       3 |     81.628 |         -9 |       1800 |      2030 |         2 | Weekday       |     201608 | Work          | Car            |
 |  4 |  30000007 |          3 |      300000073 |         37 |          28 | Adult       |         1 |       8 |      2.25  |        330 |        845 |       900 |         2 | Weekday       |     201608 | S_d_r         | Car            |
 
+- PERSONID_new: 새롭게 부여된 unique ID
+- HHSTFIPS: Milwaukee code
+- R_AGE_IMP: Age
+- R_AGE_new: new classification of age group
+- 나머지 column들에 대한 정보는 https://nhts.ornl.gov/downloads 여기서 제공하는 Format library 에서 알 수 있다.
+
+
+#### 0.1.2. Preprocess NHTS
+###### Cleans and preprocesses the NHTS dataset (After running organize_columns function) to correct data anomalies and enhance data quality for analysis. The preprocessing steps include adjusting dwelling times, calculating travel times, and ensuring data consistency across the travel records.
+
+
+```python
+repaired_NHTS = preprocess_NHTS(trippub_organized, print_progress = True) # will take long time
+repaired_NHTS.to_csv('[yourPath]' + 'repaired_NHTS.csv') # save
+display(repaired_NHTS.head())
+```
+
+|    |   Unnamed: 0 |    uniqID |   age | Day_Type   | Trip_pur   |   sta_T_hms |   arr_T_hms |   end_T_hms |   Dwell_T_min |   Trip_T_min |   sta_T_min |   arr_T_min |   end_T_min | age_class   |
+|---:|-------------:|----------:|------:|:-----------|:-----------|------------:|------------:|------------:|--------------:|-------------:|------------:|------------:|------------:|:------------|
+|  0 |            0 | 300000071 |    67 | Weekday    | Home       |           0 |           0 |        1000 |           600 |            0 |           0 |           0 |         600 | Seniors     |
+|  1 |            1 | 300000071 |    67 | Weekday    | S_d_r      |        1000 |        1015 |        1510 |           295 |           15 |         600 |         615 |         910 | Seniors     |
+|  2 |            2 | 300000071 |    67 | Weekday    | Home       |        1510 |        1530 |        2400 |           510 |           20 |         910 |         930 |        1440 | Seniors     |
+|  3 |            3 | 300000073 |    28 | Weekday    | Home       |           0 |           0 |         845 |           525 |            0 |           0 |           0 |         525 | Adult       |
+|  4 |            4 | 300000073 |    28 | Weekday    | S_d_r      |         845 |         900 |        1430 |           330 |           15 |         525 |         540 |         870 | Adult       |
+
+- age: Origin age
+- Day_Type: Weekday or Weekend
+- Trip_pur: trip purpose
+- sta_T_hms: Trip start time. (1000 -> 10:00, 1510 -> 15:10)
+- arr_T_hms: Trip arrival time
+- end_T_hms: End time of activity
+- Dwell_T_min: Dwell time (duration - minutes)
+- Trip_T_min: Travel time (duration - minutes)
+- sta_T_min: Trip start time corresponding to 'sta_T_hms' (600 -> 10:00, 910 -> 15:10)
+- arr_T_min: Trip arrival time corresponding to 'arr_T_hms'
+- end_T_min: End time of activity corresponding to 'end_T_hms'
+- age_class: age groups
+
+
+
+#### 0.1.3. Preprocessing for tripmode
+###### Processes the NHTS dataset to create a new trip purpose category and calculates the probability of trip mode choices by age and newly defined trip purpose. This function aims to simplify the analysis of trip behaviors across different demographics and trip purposes by mapping detailed purposes into broader categories.
+
+```python
+trip_mode_prop_all = preprocess_NHTS_tripMode(trippub_organized) 
+trip_mode_prop_all.to_csv('[yourPath]' + 'trip_mode_prop_all.csv')  # save
+display(trip_mode_prop_all.head())
+```
+
+|    | age_class   | Trip_pur   | Trip_mode   |   nominator |   denominator |   Trip_modeP |
+|---:|:------------|:-----------|:------------|------------:|--------------:|-------------:|
+|  0 | Adult       | D_shop     | Bicy        |         126 |         15158 |   0.00831244 |
+|  1 | Adult       | D_shop     | Car         |       13528 |         15158 |   0.892466   |
+|  2 | Adult       | D_shop     | PTrans      |         210 |         15158 |   0.0138541  |
+|  3 | Adult       | D_shop     | Walk        |        1294 |         15158 |   0.0853675  |
+|  4 | Adult       | Home       | Bicy        |         727 |         46155 |   0.0157513  |
+
+- Trip_modeP: Probability of choosing trip mode for each age class and trip purpose
+
+
 
 ### 0.2. Preprocess SafeGraph data
+#### 0.2.1. DO to OD, Covert Destination area to Origin area
+###### Converts Destination-Origin (DO) data into Origin-Destination (OD) data using the input SafeGraph Neighborhood data. The function processes columns related to work behavior and device home areas during weekdays and weekends, transforming them into a format that specifies how many devices move from one area to another.
+
+```python
+neighbor_2020_09_OD = DOtoOD(neighbor_2020_09, print_progress = True)
+display(neighbor_2020_09_OD.heaD())
+```
+
+|    |         area | work_behavior_from_area                                                                                            | weekday_device_from_area_home                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | weekend_device_from_area_home                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|---:|-------------:|:-------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  0 | 550791854002 | {'550790042003': 4, '550790042002': 4}                                                                             | {'550791854002': 6, '550790201003': 4, '550790084002': 4, '550790032001': 4, '550791101002': 4, '550790144002': 4, '550790092001': 4, '550790099002': 4, '550790001012': 4, '550791861001': 4, '550790036001': 4, '550790113002': 4, '550790098001': 4, '550790044001': 4, '550790060002': 4, '550791856001': 4, '550791870002': 4, '550790046004': 4, '550790137001': 4, '550791205022': 4, '550790112002': 4, '550790068001': 4, '550790200001': 4, '550790099001': 4}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | {'550791854002': 4, '550791002003': 4, '550790091002': 4, '550790144002': 4, '550790005013': 4, '550790059003': 4, '550790077002': 4, '550790087001': 4, '550790086002': 4, '550791853001': 4, '550791101003': 4, '550790906001': 4, '550790113001': 4, '550790166001': 4}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|  1 | 550790033002 | {'550790040003': 4, '550790019004': 4, '550790005022': 4, '550790002011': 4, '550791853001': 4, '550790076003': 4} | {'550790033002': 5, '550790051002': 4, '550790039003': 4, '550790910002': 4, '550790065003': 4, '550790034001': 12, '550790001021': 4, '550790003021': 4, '550790052002': 4, '550791201022': 4, '550790031004': 4, '550790050003': 4, '550790501021': 5, '550791001002': 4, '550790063003': 4, '550790149002': 4, '550790912002': 4, '550790002021': 4, '550790602001': 5, '550790024003': 5, '550790010001': 4, '550790059001': 5, '550790601012': 4, '550791874001': 4, '550790501024': 4, '550790160002': 4, '550790051003': 5, '550790035004': 11, '550790011001': 4, '550790902002': 14, '550790006004': 5, '550791003001': 4, '550790003042': 4, '550790004001': 4, '550790034004': 4, '550790005013': 20, '550790059003': 5, '550790005022': 4, '550790033003': 6, '550790006005': 5, '550790002011': 5, '550791861001': 4, '550790038002': 4, '550790017003': 11, '550790035003': 4, '550790001022': 4, '550791002001': 4, '550790126002': 4, '550790058002': 4, '550790036002': 4, '550790036001': 8, '550791865001': 4, '550790903001': 13, '550790141001': 7, '550790017005': 4, '550790044001': 4, '550790016002': 4, '550790005023': 4, '550790912003': 4, '550790111002': 4, '550790021001': 4, '550790183001': 4, '550790063001': 4, '550790033004': 4, '550791008002': 4, '550790054002': 4, '550791854001': 4, '550790002023': 4, '550791853001': 12, '550790059002': 4, '550791014001': 4, '550790031003': 4, '550790066002': 4, '550799800001': 4, '550790007003': 4, '550790020001': 4, '550791001003': 4, '550790217005': 4, '550790048003': 4, '550791004003': 4, '550790910004': 4, '550790906001': 4, '550790005011': 4, '550791853002': 4, '550790058003': 4, '550790051001': 5, '550790017004': 4, '550791602033': 4, '550790041001': 4, '550791205013': 4, '550791011001': 4, '550791101001': 9, '550790901003': 6, '550790092002': 4, '550790010004': 5} | {'550791854002': 4, '550791009002': 5, '550790051002': 4, '550790034001': 13, '550790024001': 4, '550791501004': 4, '550791101002': 4, '550790055001': 4, '550790149002': 4, '550790912002': 4, '550790602001': 4, '550790024003': 8, '550790501011': 4, '550791865002': 4, '550790035004': 4, '550790902002': 12, '550790005013': 6, '550790059003': 4, '550790005022': 4, '550790001012': 4, '550790033003': 4, '550790049002': 4, '550790006005': 4, '550790038001': 4, '550790005021': 4, '550790017003': 10, '550790001022': 4, '550791002001': 4, '550791201021': 4, '550791855002': 4, '550790036001': 4, '550790903001': 7, '550790004002': 5, '550790044001': 4, '550790352001': 4, '550791007003': 4, '550790602003': 4, '550790035001': 4, '550790033004': 4, '550790055004': 4, '550791860001': 4, '550791868001': 4, '550791853001': 4, '550791101003': 4, '550790013001': 4, '550790029001': 4, '550790031003': 4, '550791001003': 5, '550790048003': 4, '550790167001': 4, '550790051001': 4, '550790089002': 4, '550790901003': 4, '550791010001': 4, '550790200001': 4} |
+
+- area: Census Block Groups (CBG), origin home area
+- work_behavior_from_area: # people trip to workplace from 'area' (Workplace: # people)
+- weekday_device_from_area_home: # people trip from 'area' to certain CBG in weekday (certain CBG: # people)
+- weekend_device_from_area_home: # people trip from 'area' to certain CBG in weekend
+
+
+#### 0.2.2. Computing probability of trips from origin cbg to dest cbg
+
+
+```python
+prob_trips_2020_09_ws05_wd025 = compute_probabilityByk_Ws_Wd(neighbor_2020_09_OD, landUse, W_s = 0.5, W_d = 0.25)
+display(prob_trips_2020_09_ws05_wd025.head())
+```
+
+여기 할 차례
+
+
+#### 0.2.3. Combine all probability tables by their month
+
+여기에는 concatenate으로 해라 이정도만 쓰기.
+
+
+#### 0.2.4. fill empty probability
+
+
+```python
+prob_2020_09_combined = prob_2020_09_combined.apply(fill_values, axis = 1)
+prob_2020_09_combined.to_csv('[yourPath]' + 'prob_2020_09_combined.xlsx') # save
+display(prob_2020_09_combined.head())
+```
+
+
+
 
 
 ## 1. Execution for ABTS
