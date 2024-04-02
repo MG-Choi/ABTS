@@ -459,29 +459,98 @@ display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_
 ```python
 ratio_table, average_distance_ratio = abts.calculate_sampled_network_distance(cbg_gdf = cbg, network_road = network_road, num_samples = 200)
 print('average_distance_ratio: ', average_distance_ratio)
+
+# average_distance_ratio:  1.161508600010609
 ```
-|     |  average_distance_ratio:  1.161508600010609 |     |  
-
-
 
 
 
 #### 1.5.1. Estimate probabilistic destinations for trip purpose t
 
+```python
+simul_trip_routes_sample, assigned_trip_table = abts.assignDest(prob_2020_09_combined, simul_trip_mode_sample, print_progress = True) # randomly select 'W_d' and 'W_s' in prob_2020_09_combined dataframe.
+```
+
+
+
+```python
+# set W_d and W_s manually
+W_d_W_s = {'Rec_lei': {'Ws': 1.5, 'Wd': 0.5}, 
+           'Meals': {'Ws': 0.5, 'Wd': 0.75}, 
+           'Work': {'Ws': 1.0, 'Wd': 0.5}, 
+           'Serv_trip': {'Ws': 0.5, 'Wd': 0.75}, 
+           'D_shop': {'Ws': 0.5, 'Wd': 0.25}, 
+           'S_d_r': {'Ws': 1.0, 'Wd': 0.5}, 
+           'Others': {'Ws': 0.5, 'Wd': 0.25}, 
+           'V_fr_rel': {'Ws': 1.0, 'Wd': 0.5}}
+
+simul_trip_routes_sample, assigned_trip_table = abts.assignDest(prob_2020_09_combined, simul_trip_mode_sample,
+                                                                 W_d_W_s = W_d_W_s,
+                                                                 print_progress = True)
+
+display(simul_trip_routes_sample[(simul_trip_routes_sample['uniqID'] == 7) & (simul_trip_routes_sample['Day_Type'] == 'Monday')])
+```
+
+
+|     |   uniqID | ageGroup   |     Home_cbg | Day_Type   | TRPPURP   |   sequence |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |   trip_count_class |   Dwell_Time |   sta_T_min | Trip_mode   |       Origin |         Dest |    Ws |     Wd | TRPPURP_det   |   TripDist |   TripTime |
+|----:|---------:|:-----------|-------------:|:-----------|:----------|-----------:|--------:|--------:|--------:|--------:|-------------------:|-------------:|------------:|:------------|-------------:|-------------:|------:|-------:|:--------------|-----------:|-----------:|
+| 206 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          1 |     0.7 |       1 |     1   |     1   |                  2 |           42 |           0 | nan         | 550790005021 | 550790005021 | nan   | nan    | Home          |   0.552907 |        nan |
+| 207 |        7 | MidAdult   | 550790005021 | Monday     | Work      |          2 |     0.7 |       1 |     1.2 |     0.7 |                  2 |          510 |         510 | Car         | 550790005021 | 550790026001 |   1.5 |   0.5  | Work          |   7.75753  |         12 |
+| 208 |        7 | MidAdult   | 550790005021 | Monday     | S_d_r     |          3 |     0.7 |       1 |     1   |     1   |                  2 |            3 |         nan | Car         | 550790026001 | 550790001022 |   1.5 |   0.25 | Religion      |   9.48366  |         14 |
+| 209 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          4 |     0.7 |       1 |     1   |     1   |                  2 |          390 |         nan | Car         | 550790001022 | 550790005021 | nan   | nan    | Home          |   5.54624  |          8 |
+
 
 #### 1.5.2. Compute trip distance and duration
 
+```python
+simul_trip_Dist_Time_sample = abts.estimate_tripDist_Time(simul_trip_routes_sample, cbg, distance_ratio = average_distance_ratio, print_progress = True)
+
+display(simul_trip_Dist_Time_sample[(simul_trip_Dist_Time_sample['uniqID'] == 7) & (simul_trip_Dist_Time_sample['Day_Type'] == 'Monday')])
+```
+
+
+|     |   uniqID | ageGroup   |     Home_cbg | Day_Type   |   sequence |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK | TRPPURP   | TRPPURP_det   |    Ws |     Wd |       Origin |         Dest |   TripDist | Trip_mode   |   TripSTARTT |   TripTime |   TripENDT |   start_min |   Dwell_Time |   end_min |
+|----:|---------:|:-----------|-------------:|:-----------|-----------:|--------:|--------:|--------:|--------:|:----------|:--------------|------:|-------:|-------------:|-------------:|-----------:|:------------|-------------:|-----------:|-----------:|------------:|-------------:|----------:|
+| 206 |        7 | MidAdult   | 550790005021 | Monday     |          1 |     0.7 |       1 |     1   |     1   | Home      | Home          | nan   | nan    | 550790005021 | 550790005021 |   0.552907 | nan         |          nan |        nan |        nan |           0 |          510 |       510 |
+| 207 |        7 | MidAdult   | 550790005021 | Monday     |          2 |     0.7 |       1 |     1.2 |     0.7 | Work      | Work          |   1.5 |   0.5  | 550790005021 | 550790026001 |   7.75753  | Car         |          510 |         12 |        522 |         522 |          510 |      1032 |
+| 208 |        7 | MidAdult   | 550790005021 | Monday     |          3 |     0.7 |       1 |     1   |     1   | S_d_r     | Religion      |   1.5 |   0.25 | 550790026001 | 550790001022 |   9.48366  | Car         |         1032 |         14 |       1046 |        1046 |            3 |      1049 |
+| 209 |        7 | MidAdult   | 550790005021 | Monday     |          4 |     0.7 |       1 |     1   |     1   | Home      | Home          | nan   | nan    | 550790001022 | 550790005021 |   5.54624  | Car         |         1049 |          8 |       1057 |        1057 |          390 |      1447 |
 
 
 #### 1.5.3. Optimize Trips with Logical and space-time constraints
 
 
+```python
+simul_trip_result_sample = abts.optimizeTrips_constraint(simul_trip_Dist_Time_sample, dwellTime_dict, print_progress = True)
+
+display(simul_trip_result_sample[(simul_trip_result_sample['uniqID'] == 7) & (simul_trip_result_sample['Day_Type'] == 'Monday')])
+
+```
+
+
+|     |   uniqID | ageGroup   |     Home_cbg | Day_Type   |   sequence |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK | TRPPURP   | TRPPURP_det   |    Ws |     Wd |       Origin |         Dest |   TripDist | Trip_mode   |   TripSTARTT |   TripTime |   TripENDT |   start_min |   Dwell_Time |   end_min |
+|----:|---------:|:-----------|-------------:|:-----------|-----------:|--------:|--------:|--------:|--------:|:----------|:--------------|------:|-------:|-------------:|-------------:|-----------:|:------------|-------------:|-----------:|-----------:|------------:|-------------:|----------:|
+| 205 |        7 | MidAdult   | 550790005021 | Monday     |          1 |     0.7 |       1 |     1   |     1   | Home      | Home          | nan   | nan    | 550790005021 | 550790005021 |   0.552907 | nan         |          nan |        nan |        nan |           0 |          435 |       435 |
+| 206 |        7 | MidAdult   | 550790005021 | Monday     |          2 |     0.7 |       1 |     1.2 |     0.7 | Work      | Work          |   1.5 |   0.5  | 550790005021 | 550790026001 |   7.75753  | Car         |          435 |         12 |        447 |         447 |          156 |       603 |
+| 207 |        7 | MidAdult   | 550790005021 | Monday     |          3 |     0.7 |       1 |     1   |     1   | S_d_r     | Religion      |   1.5 |   0.25 | 550790026001 | 550790001022 |   9.48366  | Car         |          603 |         14 |        617 |         617 |            5 |       622 |
+| 208 |        7 | MidAdult   | 550790005021 | Monday     |          4 |     0.7 |       1 |     1   |     1   | Home      | Home          | nan   | nan    | 550790001022 | 550790005021 |   5.54624  | Car         |          622 |          8 |        630 |         630 |          810 |      1440 |
 
 
 
 ## 2. Results (example)
 
 
+<div style="text-align: center;">
+    <img src="/ABTS/image/Result_2020_09_11.png" alt="Figure 2. Spatial patterns of travel counts in destination CBG in Milwaukee (2020/09~11)" width="600"/>
+    <p>Figure 2. Spatial patterns of travel counts in destination CBG in Milwaukee (2020/09)</p>
+</div>
+
+
+
+<div style="text-align: center;">
+    <img src="/ABTS/image/Result_Adult_MidAdult_Work_2020_09_11.png" alt="Figure 3. Spatial patterns of travel counts for work trips in destination CBG by Adult and Mid-adult agegroup (2020/09~11)" width="600"/>
+    <p>Figure 3. Spatial patterns of travel counts for work trips in destination CBG by Adult and Mid-adult agegroup (2020/09~11)</p>
+</div>
 
 
 
