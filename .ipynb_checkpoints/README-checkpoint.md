@@ -237,7 +237,7 @@ network_road = abts.network_road # road network data in Milwaukee
 ###### probability를 기반으로 count함.
 
 <div style="text-align: center">
-    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="250"/>
+    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="225"/>
     <p>Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day.</p>
 </div>
 
@@ -332,16 +332,35 @@ eachTrip_simul_total_sample.head()
 
 ##### 1.2.0.1. Create trip seqeunce of individuals using origin NHTS data
 
-````python
+```python
 trip_sequence_origin = abts.create_trip_sequence(repaired_NHTS, print_progress = True)
+trip_sequence_origin.head()
 ```
+
+|        | age_class   | Day_Type   |    uniqID | Trip_sequence                                                   |   count |
+|-------:|:------------|:-----------|----------:|:----------------------------------------------------------------|--------:|
+| 125583 | Seniors     | Weekday    | 303362241 | Home-D_shop-Home                                                |       1 |
+|  61063 | MidAdult    | Weekday    | 302647372 | Home-Work-Home                                                  |       1 |
+|  51450 | MidAdult    | Weekday    | 300479321 | Home-S_d_r-Home-Serv_trip-D_shop-Home-Serv_trip-Home-S_d_r-Home |       1 |
+| 195589 | Teen        | Weekend    | 303065214 | Home-S_d_r-Others-Home                                          |       1 |
+| 152311 | Seniors     | Weekday    | 404375522 | Home-Serv_trip-D_shop-D_shop-Home                               |       1 |
 
 
 #### 1.2.1. Finding optimal origin sequence O<i><sub>i</sub></i> most similar to S<i><sub>i</sub></i>
 #### 1.2.2. Randomly assign the trip sequence for S<i><sub>i</sub></i>
 #### 1.2.3. Reassign the sequence of trip in S<i><sub>i</sub></i> based on O<i><sub>i</sub></i>
 
-###### 여기에는 하나의 equation
+```python
+simul_trip_sequence_sample = abts.makeTripSequence(eachTrip_simul_total_sample, trip_sequence_origin, print_progress = True)
+simul_trip_sequence_sample.head()
+```
+
+|     |   uniqID | ageGroup   |     Home_cbg | Day_Type   | Week_Type   | TRPPURP   |   sequence | seq_NHTS                                          |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |
+|----:|---------:|:-----------|-------------:|:-----------|:------------|:----------|-----------:|:--------------------------------------------------|--------:|--------:|--------:|--------:|
+| 206 |        7 | MidAdult   | 550790005021 | Monday     | Weekday     | Home      |          1 | Home-Work-S_d_r-Work-S_d_r-Meals-Work-D_shop-Home |     0.7 |       1 |     1   |     1   |
+| 207 |        7 | MidAdult   | 550790005021 | Monday     | Weekday     | Work      |          2 | Home-Work-S_d_r-Work-S_d_r-Meals-Work-D_shop-Home |     0.7 |       1 |     1.2 |     0.7 |
+| 208 |        7 | MidAdult   | 550790005021 | Monday     | Weekday     | S_d_r     |          3 | Home-Work-S_d_r-Work-S_d_r-Meals-Work-D_shop-Home |     0.7 |       1 |     1   |     1   |
+| 209 |        7 | MidAdult   | 550790005021 | Monday     | Weekday     | Home      |          4 | Home-Work-S_d_r-Work-S_d_r-Meals-Work-D_shop-Home |     0.7 |       1 |     1   |     1   |
 
 
 
