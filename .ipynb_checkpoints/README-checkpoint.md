@@ -221,20 +221,30 @@ network_road = abts.network_road # road network data in Milwaukee
 
 
 ### 1.1. Trip Occurence Builder
-###### trip occurence builder는 ~~~
+###### trip occurence builder는 ~~ ~ probability 부터
+
 
 <div style="text-align: center">
-    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." width="350"/>
+    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." height="250"/>
 </div>
 
+###### probability를 기반으로 count함.
 
+<div style="text-align: center">
+    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="250"/>
+</div>
 
 
 
 #### 1.1.0. Data staging
 ###### 데이터 staging은 한번만 시행해도 되는 것.
 
+```python
+naive_result = abts.naive_bayes_prob_with_day(repaired_NHTS, age_col = 'age_class', tripPurpose_col= 'Trip_pur', travday_col= 'Day_Type')
+```
+
 ##### 1.1.0.1. The probability of a person with age ‘a’ having ‘t’ trips occurs in a single day
+
 
 
 ##### 1.1.0.2. The number of trips based on unique IDs, age, day type, and trip purpose derived from NHTS data
