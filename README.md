@@ -225,13 +225,13 @@ network_road = abts.network_road # road network data in Milwaukee
 
 
 <div style="text-align: center">
-    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." height="150"/>
+    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." height="250"/>
 </div>
 
 ###### probability를 기반으로 count함.
 
 <div style="text-align: center">
-    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="100"/>
+    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="250"/>
 </div>
 
 
@@ -239,20 +239,74 @@ network_road = abts.network_road # road network data in Milwaukee
 #### 1.1.0. Data staging
 ###### 데이터 staging은 한번만 시행해도 되는 것.
 
-```python
-naive_result = abts.naive_bayes_prob_with_day(repaired_NHTS, age_col = 'age_class', tripPurpose_col= 'Trip_pur', travday_col= 'Day_Type')
-```
 
 ##### 1.1.0.1. The probability of a person with age ‘a’ having ‘t’ trips occurs in a single day
 
+```python
+naive_result = abts.naive_bayes_prob_with_day(repaired_NHTS, age_col = 'age_class', tripPurpose_col= 'Trip_pur', travday_col= 'Day_Type')
+
+naive_result.head()
+```
+
+|    | Age   | Trip_pur   | Day_Type   |       Prob |
+|---:|:------|:-----------|:-----------|-----------:|
+| 67 | Child | Others     | Weekend    | 0.0123082  |
+| 18 | Adult | Home       | Weekday    | 0.46988    |
+| 84 | Teen  | Others     | Weekday    | 0.00842771 |
+| 19 | Adult | Home       | Weekend    | 0.483808   |
+| 21 | Adult | S_d_r      | Weekend    | 0.0666646  |
 
 
 ##### 1.1.0.2. The number of trips based on unique IDs, age, day type, and trip purpose derived from NHTS data
+
+```python
+trip_count = abts.generate_trip_distribution(repaired_NHTS, id_age = 'age_class', id_col = 'uniqID', day_type_col = 'Day_Type', trip_purpose_col = 'Trip_pur')
+
+trip_count.head()
+```
+
+|        |    uniqID | age_class   | Day_Type   | Trip_pur   |   count |
+|-------:|----------:|:------------|:-----------|:-----------|--------:|
+|  72503 | 301276494 | Child       | Weekday    | Home       |       2 |
+| 240927 | 304228581 | Seniors     | Weekend    | Home       |       2 |
+| 362687 | 401351691 | Adult       | Weekday    | D_shop     |       1 |
+| 561851 | 407165011 | Adult       | Weekday    | Home       |       3 |
+|  76059 | 301334554 | Teen        | Weekday    | Home       |       1 |
+
 
 
 
 #### 1.1.1. The number of trips occurring ‘k’ times for a single individual ‘i’ in a day
 
+```python
+
+# set up the number of people by age
+age_pop = {'Seniors': 3, 'Adult': 3, 'MidAdult': 3, 'Child': 3, 'Teen': 3}
+
+# the number of trips occurring ‘k’ times for a single individual ‘i’ in a day
+eachTrip_simul_total_sample = abts.generate_combined_trip_count(
+    naive_prob=naive_result,
+    trip_count=trip_count,
+    age_n_dict=age_pop,
+    method='multinomial',
+    Home_cbg=550790005021, #home CBG (Census Block Group)
+    W_k_weekday = 0.7,
+    W_k_weekend = 1.0,
+    W_t_weekday={'Work': 1.2, 'S_d_r': 1, 'Rec_lei': 1.1},
+    W_t_weekend={'Work': 0.7, 'S_d_r': 1, 'Rec_lei': 1.1},
+    print_progress=True
+)
+
+eachTrip_simul_total_sample.head()
+```
+
+|     |   uniqID | ageGroup   | Day_Type   | Week_Type   | TRPPURP   |   count |     Home_cbg |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |
+|----:|---------:|:-----------|:-----------|:------------|:----------|--------:|-------------:|--------:|--------:|--------:|--------:|
+| 487 |        6 | MidAdult   | Friday     | Weekday     | S_d_r     |       0 | 550790005021 |     0.7 |       1 |     1   |     1   |
+| 717 |       10 | Child      | Saturday   | Weekend     | Others    |       0 | 550790005021 |     0.7 |       1 |     1   |     1   |
+| 687 |       10 | Child      | Friday     | Weekday     | Rec_lei   |       0 | 550790005021 |     0.7 |       1 |     1.1 |     1.1 |
+| 878 |       13 | Teen       | Friday     | Weekday     | Serv_trip |       0 | 550790005021 |     0.7 |       1 |     1   |     1   |
+| 639 |       11 | Child      | Wednesday  | Weekday     | Home      |       2 | 550790005021 |     0.7 |       1 |     1   |     1   |
 
 
 
