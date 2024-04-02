@@ -222,9 +222,10 @@ cbg = abts.cbg # CBG shp file
 network_road = abts.network_road # road network data in Milwaukee
 
 ```
-###### network_road의 경우 다음의 코드를 사용하여 
+###### abts.cbg is a downloaded dataset from the Census. abts.network_road dataset is imported using the code stated below. 
 
 ```python
+import osmnx as ox
 network_road = ox.graph_from_place('Milwaukee, Wisconsin, USA', network_type='drive')
 ```
 
