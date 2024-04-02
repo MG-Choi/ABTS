@@ -222,8 +222,11 @@ cbg = abts.cbg # CBG shp file
 network_road = abts.network_road # road network data in Milwaukee
 
 ```
-###### 데이터 import
+###### network_road의 경우 다음의 코드를 사용하여 
 
+```python
+network_road = ox.graph_from_place('Milwaukee, Wisconsin, USA', network_type='drive')
+```
 
 ### 1.1. Trip Occurence Builder
 ###### trip occurence builder는 ~~ ~ probability 부터
