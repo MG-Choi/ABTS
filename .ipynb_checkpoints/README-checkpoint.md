@@ -460,7 +460,7 @@ display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_
 ratio_table, average_distance_ratio = abts.calculate_sampled_network_distance(cbg_gdf = cbg, network_road = network_road, num_samples = 200)
 print('average_distance_ratio: ', average_distance_ratio)
 ```
-| | average_distance_ratio:  1.161508600010609 | |
+|     |  average_distance_ratio:  1.161508600010609 |     |  
 
 
 
