@@ -21,7 +21,7 @@ import ABTS as abts
 ###### Figure 1 shows the framework of ABTS. ABTS utilizes a three-step process to generate the initial outcome of individual travel schedules: 1) Comprehensive Travel Classifier, 2) Land-Use Estimator, and 3) Individual Travel Schedule. The output of ABTS includes individual daily trip chains that consists of each trip purpose, occurrence time, destination, duration, and mode, tailored according to age group.
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/Figure1_Framework_of_ABTS.png" alt="Figure1. Framework_of_ABTS" width="650"/>
+    <img src="/ABTS/image/Figure1_Framework_of_ABTS.png" alt="Figure1. Framework_of_ABTS" width="800"/>
     <p>Table 1. Classification in ABTS</p>
 </div>
 
@@ -29,7 +29,7 @@ import ABTS as abts
 ###### Comprehensive travel classifier에서는 Table 1과 같이 trip purpose와 trip mode, Age group을 각각의 기준으로 classify한다. 예로 trip purpose는 9개의 Major trip purpose와 13개의 Sub trip purpose로 나눠진다.
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="450"/>
+    <img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="650"/>
     <p>Table 1. Classification in ABTS</p>
 </div>
 
