@@ -312,10 +312,23 @@ eachTrip_simul_total_sample.head()
 
 
 ### 1.2. Trip Chains Builder
+###### trip chains builder에서는~
+
+<div style="text-align: center;">
+    <img src="/ABTS/image/EQ3_6_tripChain.png" alt="Equation 3-6. Simulated sequence 'S' reassignment based on the most similar origin sequence (O) for individual (i) within age group (a)" height="250"/>
+    <p>Equation 3-6. Simulated sequence 'S' reassignment based on the most similar origin sequence 'O' for individual 'i' within age group 'a'</p>
+</div>
+
+
 
 #### 1.2.0. Data staging
 
 ##### 1.2.0.1. Create trip seqeunce of individuals using origin NHTS data
+
+````python
+trip_sequence_origin = abts.create_trip_sequence(repaired_NHTS, print_progress = True)
+```
+
 
 #### 1.2.1. Finding optimal origin sequence O<i><sub>i</sub></i> most similar to S<i><sub>i</sub></i>
 #### 1.2.2. Randomly assign the trip sequence for S<i><sub>i</sub></i>
