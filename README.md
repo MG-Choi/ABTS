@@ -426,13 +426,27 @@ display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 
     <p>Equation 9. Assign Trip mode applying round trip</p>
 </div>
 
+```python
+simul_trip_mode_sample = abts.put_tripMode(simul_trip_start_time_sample, trip_mode, print_progress = True)
+display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_trip_mode_sample['Day_Type'] == 'Monday')])
+```
+
+
+|     |   uniqID | ageGroup   |     Home_cbg | Day_Type   | TRPPURP   |   sequence |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |   trip_count_class |   Dwell_Time |   sta_T_min | Trip_mode   |   Origin |         Dest |    Ws |     Wd | TRPPURP_det   |
+|----:|---------:|:-----------|-------------:|:-----------|:----------|-----------:|--------:|--------:|--------:|--------:|-------------------:|-------------:|------------:|:------------|---------:|-------------:|------:|-------:|:--------------|
+| 206 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          1 |     0.7 |       1 |     1   |     1   |                  2 |           42 |           0 | nan         |      nan | 550790005021 | nan   | nan    | Home          |
+| 207 |        7 | MidAdult   | 550790005021 | Monday     | Work      |          2 |     0.7 |       1 |     1.2 |     0.7 |                  2 |          510 |         510 | Car         |      nan | 550790026001 |   1.5 |   0.5  | Work          |
+| 208 |        7 | MidAdult   | 550790005021 | Monday     | S_d_r     |          3 |     0.7 |       1 |     1   |     1   |                  2 |            3 |         nan | Car         |      nan | 550790001022 |   1.5 |   0.25 | Religion      |
+| 209 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          4 |     0.7 |       1 |     1   |     1   |                  2 |          390 |         nan | Car         |      nan | 550790005021 | nan   | nan    | Home          |
+
+
 
 
 ### 1.5. Spatial Trip Route Estimator
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ10_assignDest.png" alt="Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'" height="320"/>
+    <img src="/ABTS/image/EQ10_assignDest.png" alt="Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'" height="300"/>
     <p>Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'</p>
 </div>
 
@@ -441,6 +455,15 @@ display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 
 #### 1.5.0. Data staging
 
 ##### 1.5.0.1. Ratio between straight path and network path
+
+```python
+ratio_table, average_distance_ratio = abts.calculate_sampled_network_distance(cbg_gdf = cbg, network_road = network_road, num_samples = 200)
+print('average_distance_ratio: ', average_distance_ratio)
+```
+|average_distance_ratio:  1.161508600010609|
+
+
+
 
 
 #### 1.5.1. Estimate probabilistic destinations for trip purpose t
