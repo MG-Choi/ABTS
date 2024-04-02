@@ -352,7 +352,8 @@ trip_sequence_origin.head()
 
 ```python
 simul_trip_sequence_sample = abts.makeTripSequence(eachTrip_simul_total_sample, trip_sequence_origin, print_progress = True)
-simul_trip_sequence_sample.head()
+display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) & (simul_trip_sequence_sample['Day_Type'] == 'Monday')])
+
 ```
 
 |     |   uniqID | ageGroup   |     Home_cbg | Day_Type   | Week_Type   | TRPPURP   |   sequence | seq_NHTS                                          |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |
@@ -366,21 +367,64 @@ simul_trip_sequence_sample.head()
 
 ### 1.3. Trip Timing Estimator
 
+
+<div style="text-align: center;">
+    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 7. Dwell time of all trips for each individual" height="450"/>
+    <p>Equation 7. Dwell time of all trips for each individual</p>
+</div>
+
+
+<div style="text-align: center;">
+    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 8. Trip start time for each individual" height="450"/>
+    <p>Equation 8. Trip start time for each individual</p>
+</div>
+
+
+
+
 #### 1.3.0. Data staging
 
 ##### 1.3.0.1. Extracting dwell time by trip purpose using NHTS
 
+```python
+dwellTime_dict = abts.dwellTime_listFromNHTS(repaired_NHTS)
+```
 
 ##### 1.3.0.2. Extracting trip start time by trip purpose using NHTS
 
+```python
+startTime_dict = abts.startTime_listFromNHTS(repaired_NHTS) 
+```
+
+
 
 #### 1.3.1. Estimating dwell time
-#### 1.3.2. Estimating trip start time¶
+#### 1.3.2. Estimating trip start time
 
-###### 여기에는 하나의 equation
+```python
+# assign dwell time and start time to simul data
+simul_trip_start_time_sample = abts.assignDwellStartT(simul_trip_sequence_sample, dwellTime_dict, startTime_dict, print_progress = True)
+display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 7) & (simul_trip_start_time_sample['Day_Type'] == 'Monday')])
+```
+
+
+|     |   uniqID | ageGroup   |     Home_cbg | Day_Type   | TRPPURP   |   sequence |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |   trip_count_class |   Dwell_Time |   sta_T_min | Trip_mode   |
+|----:|---------:|:-----------|-------------:|:-----------|:----------|-----------:|--------:|--------:|--------:|--------:|-------------------:|-------------:|------------:|:------------|
+| 206 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          1 |     0.7 |       1 |     1   |     1   |                  2 |           42 |           0 | Car         |
+| 207 |        7 | MidAdult   | 550790005021 | Monday     | Work      |          2 |     0.7 |       1 |     1.2 |     0.7 |                  2 |          510 |         510 | Car         |
+| 208 |        7 | MidAdult   | 550790005021 | Monday     | S_d_r     |          3 |     0.7 |       1 |     1   |     1   |                  2 |            3 |         nan | Car         |
+| 209 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          4 |     0.7 |       1 |     1   |     1   |                  2 |          390 |         nan | Car         |
+
+
 
 
 ### 1.4. Trip Mode Assigner
+
+
+<div style="text-align: center;">
+    <img src="/ABTS/image/EQ9_tripmode.png" alt="Equation 9. Assign Trip mode applying round trip" height="450"/>
+    <p>Equation 9. Assign Trip mode applying round trip</p>
+</div>
 
 
 
