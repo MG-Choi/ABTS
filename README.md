@@ -225,13 +225,13 @@ network_road = abts.network_road # road network data in Milwaukee
 
 
 <div style="text-align: center">
-    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." height="250"/>
+    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." height="150"/>
 </div>
 
 ###### probability를 기반으로 count함.
 
 <div style="text-align: center">
-    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="250"/>
+    <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="100"/>
 </div>
 
 
