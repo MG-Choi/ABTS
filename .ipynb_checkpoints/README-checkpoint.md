@@ -430,6 +430,14 @@ display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 
 
 ### 1.5. Spatial Trip Route Estimator
 
+
+<div style="text-align: center;">
+    <img src="/ABTS/image/EQ10_assignDest.png" alt="Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'" height="320"/>
+    <p>Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'</p>
+</div>
+
+
+
 #### 1.5.0. Data staging
 
 ##### 1.5.0.1. Ratio between straight path and network path
