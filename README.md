@@ -369,13 +369,13 @@ display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) &
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 7. Dwell time of all trips for each individual" height="200"/>
+    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 7. Dwell time of all trips for each individual" height="180"/>
     <p>Equation 7. Dwell time of all trips for each individual</p>
 </div>
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 8. Trip start time for each individual" height="180"/>
+    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 8. Trip start time for each individual" height="130"/>
     <p>Equation 8. Trip start time for each individual</p>
 </div>
 
