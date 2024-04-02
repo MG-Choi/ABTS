@@ -199,26 +199,36 @@ display(prob_2020_09_combined.head())
 - output dataframe은 weekday와 weekend의 trip purpose별 각 destination으로 갈 확률을 exhibit한다. dataframe의 각 칸의 key는 destination CBG, value는 확률을 의미한다. 이 정해진 확률값은 추후 destination을 결정하는데 사용된다.
 
 
-
 ---
 
 
 ## 1. Execution for ABTS
+###### 이 장에서는 위에서 가공된 preprocessed data를 가지고 ABTS를 run하려고 한다. preprocessed data의 경우 본 라이브러리 내에서 제공하므로 import하여 사용하면 된다. 
 
 ### 1.0. Data import
 
-###### 데이터 import
-
 ```python
 import ABTS as abts
+
+prob_2020_09_combined = abts.prob_2020_09_combined # Combined Probability of travels from O to D in Sep, 2020
+repaired_NHTS = abts.repaired_NHTS # preprocessed NHTS
+trip_mode = abts.trip_mode # trip mode
+cbg = abts.cbg # CBG shp file
+network_road = abts.network_road # road network data in Milwaukee
+
 ```
-
-데이터 앞과 function앞에 abts. 붙이는 것 잊지 말기.
-
-
+###### 데이터 import
 
 
 ### 1.1. Trip Occurence Builder
+###### trip occurence builder는 ~~~
+
+<div style="text-align: center">
+    <img src="/ABTS/image/EQ1_prob_t_trip.png" alt="Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day." width="350"/>
+</div>
+
+
+
 
 
 #### 1.1.0. Data staging
@@ -292,3 +302,20 @@ import ABTS as abts
 
 
 ## 2. Results (example)
+
+
+
+
+
+
+---
+
+# Related Document: 
+- Choi, M., & Hohl. A. (2024). Derivation of Spatiotemporal Risk Areas and Travel Behaviors During Pandemic Through Reverse Estimation of Mobility Patterns by Agent-Based Modeling, Spatial and Spatio-temporal Epidemiology. Under review (1st round)
+
+- Choi, M., Seo, J., & Hohl. A. (2024). ABTS: Agent-Based Travel Scheduler. In process
+
+# Author
+
+- **Author:** Moongi Choi
+- **Email:** u1316663@utah.edu

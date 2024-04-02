@@ -3356,16 +3356,6 @@ def fill_values(row):
 
 # # Execusion by User
 
-# In[ ]:
-
-
-
-
-
-# ## data/Origin폴더에 있는 데이터들은 용량이 크니 그냥 Google Drive에 넣어서 공유하기. 
-# ## 여기에 있는 데이터들은 Preprocessing NHTS 와 SafeGraph에만 사용하는 것이니 다운받아서 해보려면 해라. 이런 식으로만 주기
-
-# In[ ]:
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(current_directory)
