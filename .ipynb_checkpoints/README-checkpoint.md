@@ -369,13 +369,13 @@ display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) &
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 7. Dwell time of all trips for each individual" height="450"/>
+    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 7. Dwell time of all trips for each individual" height="225"/>
     <p>Equation 7. Dwell time of all trips for each individual</p>
 </div>
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 8. Trip start time for each individual" height="450"/>
+    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 8. Trip start time for each individual" height="225"/>
     <p>Equation 8. Trip start time for each individual</p>
 </div>
 
@@ -422,7 +422,7 @@ display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ9_tripmode.png" alt="Equation 9. Assign Trip mode applying round trip" height="450"/>
+    <img src="/ABTS/image/EQ9_tripmode.png" alt="Equation 9. Assign Trip mode applying round trip" height="225"/>
     <p>Equation 9. Assign Trip mode applying round trip</p>
 </div>
 
