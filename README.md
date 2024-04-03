@@ -237,7 +237,7 @@ network_road = ox.graph_from_place('Milwaukee, Wisconsin, USA', network_type='dr
     <p>Equation 1. The probability of a person within age group ‘a’ having ‘t’ trip occurs in a single day.</p>
 </div>
 
-###### probability를 기반으로 count함.
+###### Following this, the total number of trips <i>k</i> for each agent <i>i</i> is determined as shown in equation 2. Here, <i>W<sub>k</sub></i> serves as a parameter that fine-tunes the daily trip count for each individual. <i>k<sub>(t,i)</sub></i> is modeled to follow a multinomial distribution, where this distribution is sampled for each trip purpose <i>t</i> based on the probability distribution <i>W<sub>t</sub></i>∙<i>p<sub>(1,a,d)</sub></i>, which is conditioned on the age group <i>a</i>, day type <i>d</i>, and trip purpose <i>t</i>. Furthermore, to ensure alignment with the actual data, the aggregate of all daily trip counts <i>k<sub>(t,i)</sub></i> is set to match <i>θ<sub>i</sub></i>.
 
 <div style="text-align: center">
     <img src="/ABTS/image/EQ2_count_t_trips.png" alt="Equation 2. Counting ‘t’ trips occurring ‘k’ times for a single individual ‘i’ in a day." height="225"/>
@@ -247,10 +247,11 @@ network_road = ox.graph_from_place('Milwaukee, Wisconsin, USA', network_type='dr
 
 
 #### 1.1.0. Data staging
-###### 데이터 staging은 한번만 시행해도 되는 것.
+###### You can run this data staging only once for generating multiple travel schedules in the same area. We set the study area to Milwaukee, so you can just save the results of here to create multiple schedules in Milwaukee.
 
 
 ##### 1.1.0.1. The probability of a person with age ‘a’ having ‘t’ trips occurs in a single day
+###### Calculate the probability of trip purpose by age group and day type (Weekday or Weekend) using Naive Bayes.
 
 ```python
 naive_result = abts.naive_bayes_prob_with_day(repaired_NHTS, age_col = 'age_class', tripPurpose_col= 'Trip_pur', travday_col= 'Day_Type')
@@ -266,8 +267,11 @@ naive_result.head()
 | 19 | Adult | Home       | Weekend    | 0.483808   |
 | 21 | Adult | S_d_r      | Weekend    | 0.0666646  |
 
+- Now, the results exhibit probability of travels by trip purpose for each age group and day type.
+
 
 ##### 1.1.0.2. The number of trips based on unique IDs, age, day type, and trip purpose derived from NHTS data
+###### Generate a distribution of trips based on unique IDs, age, day type, and trip purpose (from origin NHTS data).
 
 ```python
 trip_count = abts.generate_trip_distribution(repaired_NHTS, id_age = 'age_class', id_col = 'uniqID', day_type_col = 'Day_Type', trip_purpose_col = 'Trip_pur')
@@ -283,10 +287,11 @@ trip_count.head()
 | 561851 | 407165011 | Adult       | Weekday    | Home       |       3 |
 |  76059 | 301334554 | Teen        | Weekday    | Home       |       1 |
 
-
+- This table displayes the actual counts of travels collected by each uniq person (each recepient of survey). We will use the results from this 'data staging' to generate simulated travels for individual agent.
 
 
 #### 1.1.1. The number of trips occurring ‘k’ times for a single individual ‘i’ in a day
+###### Generate a combined trip count distribution based on age groups, day type, and trip purpose.
 
 ```python
 
@@ -307,8 +312,23 @@ eachTrip_simul_total_sample = abts.generate_combined_trip_count(
     print_progress=True
 )
 
+# Parameters:
+# - naive_prob: DataFrame containing Naive Bayes probabilities.
+# - trip_count: DataFrame with trip count data.
+# - age_n_dict: Dictionary mapping age groups to the number of individuals.
+# - method: String specifying the method to distribute trips ('multinomial' or 'cdf').
+# - Home_cbg: The home census block group id.
+# - W_k_weekday: Weight multiplier for trip counts on weekdays.
+# - W_k_weekend: Weight multiplier for trip counts on weekends.
+# - W_t_weekday: Dictionary with trip purpose as keys and weights as values for weekdays.
+# - W_t_weekend: Dictionary with trip purpose as keys and weights as values for weekends.
+# - print_progress: Boolean flag to print progress.
+
+
 eachTrip_simul_total_sample.head()
 ```
+
+
 
 |     |   uniqID | ageGroup   | Day_Type   | Week_Type   | TRPPURP   |   count |     Home_cbg |   Wk_wD |   Wk_wK |   Wt_wD |   Wt_wK |
 |----:|---------:|:-----------|:-----------|:------------|:----------|--------:|-------------:|--------:|--------:|--------:|--------:|
@@ -317,6 +337,8 @@ eachTrip_simul_total_sample.head()
 | 687 |       10 | Child      | Friday     | Weekday     | Rec_lei   |       0 | 550790005021 |     0.7 |       1 |     1.1 |     1.1 |
 | 878 |       13 | Teen       | Friday     | Weekday     | Serv_trip |       0 | 550790005021 |     0.7 |       1 |     1   |     1   |
 | 639 |       11 | Child      | Wednesday  | Weekday     | Home      |       2 | 550790005021 |     0.7 |       1 |     1   |     1   |
+
+
 
 
 
