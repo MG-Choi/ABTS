@@ -229,7 +229,7 @@ network_road = ox.graph_from_place('Milwaukee, Wisconsin, USA', network_type='dr
 ```
 
 ### 1.1. Trip Occurence Builder
-###### trip occurence builder는 ~~ ~ probability 부터
+###### In the trip occurrence builder, the probability and total number of trips for each individual are computed using the NHTS data. The daily trip occurrence probability, <i>P</i>(θ), is determined for each day type <i>d</i>, age group <i>a</i>, and trip purpose <i>t</i> for an individual, employing a Naïve Bayes probability model. Day types are differentiated into weekdays and weekends. The parameter <i>W<sub>t</sub></i><sup>(<i>t</i>,<i>d</i>)</sup> modifies the occurrence probability for each trip purpose, where <i>t</i> and <i>d</i> are represented as superscripts, indicating that different values might be allocated based on the trip purpose <i>t</i> and the day type <i>d</i>.
 
 
 <div style="text-align: center">
