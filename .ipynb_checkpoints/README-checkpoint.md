@@ -353,6 +353,7 @@ eachTrip_simul_total_sample.head()
 
 ###### The third step is to reassign the sequence of trips in <i>S<sub>i</sub></i> based on <i>O<sub>i</sub></i>. Here, <i>l</i> and <i>j</i> are indices traversing each trip purpose in <i>O</i> and <i>S</i>, respectively. First, it checks whether the trip following <i>O<sub>(i,a,l)</sub></i> in sequence exists in <i>S<sub>(i,a)</sub></i>. If not, it finds the index <i>j</i> in <i>S<sub>(i,a)</sub></i> that matches the trip purpose of <i>O<sub>(i,a,l+1)</sub></i>. Then, the corresponding trip purpose at <i>S<sub>(i,a,j)</sub></i> is assigned to <i>O<sub>(i,a,l)+1</sub></i>, rearranging <i>S<sub>(i,a)</sub></i> accordingly.
 
+
 <div style="text-align: center;">
     <img src="/ABTS/image/EQ3_6_tripChain.png" alt="Equation 3-5. Simulated sequence 'S' reassignment based on the most similar origin sequence (O) for individual (i) within age group (a)" height="450"/>
     <p>Equation 3-5. Simulated sequence 'S' reassignment based on the most similar origin sequence 'O' for individual 'i' within age group 'a'</p>
@@ -364,9 +365,16 @@ eachTrip_simul_total_sample.head()
 ###### Here, again, you run this once and use the result for simulating multiple travel schedules.
 
 ##### 1.2.0.1. Create trip seqeunce of individuals using origin NHTS data
+###### Creates a trip sequence column by concatenating Trip_pur values for each group defined by age_class, Day_Type, and uniqID.
+
 
 ```python
 trip_sequence_origin = abts.create_trip_sequence(repaired_NHTS, print_progress = True)
+
+# Parameters:
+# - df: DataFrame containing trip data (NHTS).
+# - print_progress: Boolean indicating whether to print progress information.
+
 trip_sequence_origin.head()
 ```
 
@@ -378,14 +386,23 @@ trip_sequence_origin.head()
 | 195589 | Teen        | Weekend    | 303065214 | Home-S_d_r-Others-Home                                          |       1 |
 | 152311 | Seniors     | Weekday    | 404375522 | Home-Serv_trip-D_shop-D_shop-Home                               |       1 |
 
+- This table exhibits the trip sequence extracted from the origin NHTS data
+
 
 #### 1.2.1. Finding optimal origin sequence O<i><sub>i</sub></i> most similar to S<i><sub>i</sub></i>
 #### 1.2.2. Randomly assign the trip sequence for S<i><sub>i</sub></i>
 #### 1.2.3. Reassign the sequence of trip in S<i><sub>i</sub></i> based on O<i><sub>i</sub></i>
 
+###### Constructs and refines trip sequences for simulated data to ensure realistic patterns by aligning them with sequences from original NHTS data. The process includes adjusting 'Home' trip counts to reflect real-world patterns, duplicating rows based on trip counts, finding and assigning the most similar trip sequence from NHTS data, and sequentially refining trip sequences to eliminate inconsistencies such as duplicated or consecutive 'Home' trips and ensuring all trip sequences start and end with 'Home'. The function applies several passes of adjustments to achieve coherent and logically ordered trip sequences that realistically simulate daily travel behavior.
+
+
 ```python
 simul_trip_sequence_sample = abts.makeTripSequence(eachTrip_simul_total_sample, trip_sequence_origin, print_progress = True)
-display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) & (simul_trip_sequence_sample['Day_Type'] == 'Monday')])
+
+# Parameters:
+# - print_progress: Boolean flag indicating whether to print progress messages and bars during the execution.
+    
+display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) & (simul_trip_sequence_sample['Day_Type'] == 'Monday')]) # display the filtered table to show Monday trip for 1 agent with uniqID 7 
 
 ```
 
@@ -396,10 +413,15 @@ display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) &
 | 208 |        7 | MidAdult   | 550790005021 | Monday     | Weekday     | S_d_r     |          3 | Home-Work-S_d_r-Work-S_d_r-Meals-Work-D_shop-Home |     0.7 |       1 |     1   |     1   |
 | 209 |        7 | MidAdult   | 550790005021 | Monday     | Weekday     | Home      |          4 | Home-Work-S_d_r-Work-S_d_r-Meals-Work-D_shop-Home |     0.7 |       1 |     1   |     1   |
 
+- This agent goes to work -> S_d_r (School/Daycare/Religious activity) -> home. Let's assume he goes to daycare center to pick his child up.
 
 
 ### 1.3. Trip Timing Estimator
+###### The trip timing estimator is responsible for calculating the dwell time for each trip and the initial start time from home. Dwell time is determined by sampling from NHTS data, taking into account variables such as age group <i>a</i>, day type <i>d</i>, trip purpose <i>t</i>, and the count of daily trips <i>k</i>. This procedure recognizes patterns, for example, teenagers typically have shorter dwell times for work due to part-time employment, and a tendency for dwell times to decrease as the number of daily trips for the same purpose increases. The data categorizes trip counts into groups: 1 trip per day (62,984 individuals), 2-3 trips per day (66,126 individuals), and 4+ trips per day (68,810 individuals).
 
+###### In Equation 6, <i>D<sup>t</sup>(a,d,k',t)</i> signifies the list formed by sampling dwell times from the NHTS data based on age group (<i>a</i>), day type (<i>d</i>), number of trips (<i>k</i>), and trip purpose (<i>t</i>). From this list, a dwell time <i>DT<sub>i</sub><sup>t</sup></i> that matches the individual's specifics is uniformly selected and imported.
+
+###### Equation 7 involves sampling from the NHTS data to create a probability distribution of trip start times based on age group <i>a</i>, day type <i>d</i>, and trip purpose <i>t</i>. From this distribution, the trip start time for each individual <i>i</i> is then determined.
 
 <div style="text-align: center;">
     <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 6. Dwell time of all trips for each individual" height="180"/>
@@ -414,16 +436,18 @@ display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) &
 
 
 
-
 #### 1.3.0. Data staging
+###### Here, again, you run this code once and use the result for simulating multiple travel schedules.
 
 ##### 1.3.0.1. Extracting dwell time by trip purpose using NHTS
+###### Extracts and organizes dwell time distributions by trip count, trip purpose, and other classifications from NHTS data. 
 
 ```python
 dwellTime_dict = abts.dwellTime_listFromNHTS(repaired_NHTS)
 ```
 
 ##### 1.3.0.2. Extracting trip start time by trip purpose using NHTS
+###### Generates a dictionary mapping the start times of trips based on age class, day type, and the second trip purpose from the NHTS data. This function groups the data and extracts start times to understand typical trip start patterns. It's designed to be run once and reused for analysis or simulation purposes.
 
 ```python
 startTime_dict = abts.startTime_listFromNHTS(repaired_NHTS) 
@@ -433,6 +457,7 @@ startTime_dict = abts.startTime_listFromNHTS(repaired_NHTS)
 
 #### 1.3.1. Estimating dwell time
 #### 1.3.2. Estimating trip start time
+###### Estimates and assigns dwell times and start times for simulated trip data using distributions derived from NHTS data. It first classifies each trip within the simulated data by trip count and then assigns dwell times based on age class, day type, trip count class, and trip purpose. Finally, it assigns start times to the trips using similar criteria.
 
 ```python
 # assign dwell time and start time to simul data
@@ -449,18 +474,24 @@ display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 
 | 209 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          4 |     0.7 |       1 |     1   |     1   |                  2 |          390 |         nan | Car         |
 
 
+- Now the dwell time for each trip and trip start time (sta_T_min) are assigned.
+- Here, sta_T_min is minute based time, so 0 -> 12:00 AM, 360 -> 06:00 AM, 510: 8:30 AM
 
 
 ### 1.4. Trip Mode Assigner
+###### In the process of assigning individual trip modes <i>M<sub>j</sub><sup>(i)</sup></i>, we employ sampling from NHTS data and apply heuristic methods to define rules (Equation 8). The approach is as follows: First, if an individual <i>i</i> does not have any trips planned outside, then no trip mode is assigned. However, for each individual <i>i</i>, the trip modes for their <i>k<sup>th</sup></i> trips are initially determined by sampling from a probability distribution <i>P(m│a,t)</i>. This distribution is specifically tailored to the individual's age and the purpose of each trip.
 
+###### Next, certain conditions are implemented for individuals whose first trip mode is 'Car' (<i>C</i> in equation 8). The initial condition dictates that the last trip mode must also be 'Car', based on the logical assumption that if one leaves in a personal vehicle, they are expected to return in it. This excludes outliers such as taxi use, focusing solely on personal vehicle use. The subsequent condition applies to non-round trips, indicating that a change in trip mode suggests the inability to return to a car left at a previous location. This requires all subsequent trip modes to be 'Car', or the individual to maintain their previous trip mode <i>M<sub>(j-1)</sub><sup>(i)</sup></i>.
 
 <div style="text-align: center;">
     <img src="/ABTS/image/EQ9_tripmode.png" alt="Equation 8. Assign Trip mode applying round trip" height="225"/>
     <p>Equation 8. Assign Trip mode applying round trip</p>
 </div>
 
+
 ```python
 simul_trip_mode_sample = abts.put_tripMode(simul_trip_start_time_sample, trip_mode, print_progress = True)
+
 display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_trip_mode_sample['Day_Type'] == 'Monday')])
 ```
 
@@ -472,11 +503,16 @@ display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_
 | 208 |        7 | MidAdult   | 550790005021 | Monday     | S_d_r     |          3 |     0.7 |       1 |     1   |     1   |                  2 |            3 |         nan | Car         |      nan | 550790001022 |   1.5 |   0.25 | Religion      |
 | 209 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          4 |     0.7 |       1 |     1   |     1   |                  2 |          390 |         nan | Car         |      nan | 550790005021 | nan   | nan    | Home          |
 
+- Now, trip modes for each trip are assigned.
 
 
 
 ### 1.5. Spatial Trip Route Estimator
+###### In the Spatial Trip Route Estimator, destinations for each trip purpose at the CBG level are identified through the interplay of distance, land use, and agent preferences. Following this, an optimal final schedule for each individual is crafted, adhering to logical and spatiotemporal constraints.
 
+###### Equation 9 is deployed to probabilistically ascertain the destination <i>D</i> for each trip purpose. The initial probabilities are ascertained from observed monthly records of destination choices within the origin area <i>A</i>, based on SafeGraph data. Given that this research back-calculates past travels, observed travel data serves to establish baseline destination choices. Nevertheless, in scenarios lacking prior travel data for forecasts, this probability may be adjusted to 1, thus becoming solely influenced by alternative parameters.
+
+###### Because of the aggregation of SafeGraph data by counts without trip purpose delineation, two equations are combined to compute the probability for each destination specific to the trip purpose. The inaugural equation calculates the probability from the count of locations pertinent to trip purpose <i>t</i>, symbolized as <i>C<sup>(t)</sup></i>, sourced from land use data. This probability escalates with an increase in locations tied to the trip purpose within the land use data, assigned a weight <i>W<sub>s</sub></i>, termed as 'spatial attractiveness weight'. The subsequent equation is grounded in a distance sensitivity formula deriving from the distance decay function. An elevated weight <i>W<sub>d</sub></i> signifies that the distance <i>d(A,D)</i> between origin and destination markedly sways the destination selection, while a diminished weight indicates lesser influence of distance.
 
 <div style="text-align: center;">
     <img src="/ABTS/image/EQ10_assignDest.png" alt="Equation 9. Probability of trips 't' from origin area 'A' to destination 'D'" height="300"/>
@@ -484,13 +520,17 @@ display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_
 </div>
 
 
-
 #### 1.5.0. Data staging
+###### Here, again, you run this code once and use the result for simulating multiple travel schedules.
 
 ##### 1.5.0.1. Ratio between straight path and network path
+###### Calculates the average ratio between network (road) distance and straight-line distance for randomly selected pairs of points within CBGs.
+
+###### Trip distances and durations are estimated using OpenStreetMap (OSM) data via the OSMnx Python library. Given the high computational demands of calculating network distances for all trips, a sampling approach was adopted. Random points across CBGs were selected to calculate the ratio of network road distance to straight-line distance, resulting in a factor of 1.223 (example). Thus, a straight-line distance of 10 km translates to an estimated trip distance of 12.23 km.
 
 ```python
 ratio_table, average_distance_ratio = abts.calculate_sampled_network_distance(cbg_gdf = cbg, network_road = network_road, num_samples = 200)
+
 print('average_distance_ratio: ', average_distance_ratio)
 
 # average_distance_ratio:  1.161508600010609
@@ -499,13 +539,15 @@ print('average_distance_ratio: ', average_distance_ratio)
 
 
 #### 1.5.1. Estimate probabilistic destinations for trip purpose t
+###### Estimates spatial trip routes by assigning origins and destinations for simulated trips. This process uses probabilities derived from real-world data to make the simulated trips more realistic in terms of spatial distribution. 
 
+##### option 1. Randomly pick W_s and W_d from prob_2020_09_combined.
 ```python
 simul_trip_routes_sample, assigned_trip_table = abts.assignDest(prob_2020_09_combined, simul_trip_mode_sample, print_progress = True) # randomly select 'W_d' and 'W_s' in prob_2020_09_combined dataframe.
 ```
 
 
-
+##### option 2. Manually put W_s and W_d for each trip purpose
 ```python
 # set W_d and W_s manually
 W_d_W_s = {'Rec_lei': {'Ws': 1.5, 'Wd': 0.5}, 
@@ -532,11 +574,17 @@ display(simul_trip_routes_sample[(simul_trip_routes_sample['uniqID'] == 7) & (si
 | 208 |        7 | MidAdult   | 550790005021 | Monday     | S_d_r     |          3 |     0.7 |       1 |     1   |     1   |                  2 |            3 |         nan | Car         | 550790026001 | 550790001022 |   1.5 |   0.25 | Religion      |   9.48366  |         14 |
 | 209 |        7 | MidAdult   | 550790005021 | Monday     | Home      |          4 |     0.7 |       1 |     1   |     1   |                  2 |          390 |         nan | Car         | 550790001022 | 550790005021 | nan   | nan    | Home          |   5.54624  |          8 |
 
+- Now destinations (CBGs) for each trip purpose are assigned.
+
 
 #### 1.5.2. Compute trip distance and duration
+###### Estimates the distances and travel times for each trip in the simulated dataset. This function uses the geographic information from census block groups (CBG) and a predefined distance ratio to calculate network distances. It then applies average speeds based on the mode of transport and the age group of the traveler to estimate travel times.
 
 ```python
 simul_trip_Dist_Time_sample = abts.estimate_tripDist_Time(simul_trip_routes_sample, cbg, distance_ratio = average_distance_ratio, print_progress = True)
+
+# Parameters:
+# - cbg_gdf: GeoDataFrame containing CBG polygons and their FIPS codes for locating origins and destinations.
 
 display(simul_trip_Dist_Time_sample[(simul_trip_Dist_Time_sample['uniqID'] == 7) & (simul_trip_Dist_Time_sample['Day_Type'] == 'Monday')])
 ```
@@ -549,9 +597,11 @@ display(simul_trip_Dist_Time_sample[(simul_trip_Dist_Time_sample['uniqID'] == 7)
 | 208 |        7 | MidAdult   | 550790005021 | Monday     |          3 |     0.7 |       1 |     1   |     1   | S_d_r     | Religion      |   1.5 |   0.25 | 550790026001 | 550790001022 |   9.48366  | Car         |         1032 |         14 |       1046 |        1046 |            3 |      1049 |
 | 209 |        7 | MidAdult   | 550790005021 | Monday     |          4 |     0.7 |       1 |     1   |     1   | Home      | Home          | nan   | nan    | 550790001022 | 550790005021 |   5.54624  | Car         |         1049 |          8 |       1057 |        1057 |          390 |      1447 |
 
+- Now, trip distances (km) for each trip are assigned.
+
 
 #### 1.5.3. Optimize Trips with Logical and space-time constraints
-
+- Applies constraints to optimize individual trips by adjusting start and end times and updating trip modes based on certain logical conditions, such as changing modes from walking to driving or public transport for longer trips.
 
 ```python
 simul_trip_result_sample = abts.optimizeTrips_constraint(simul_trip_Dist_Time_sample, dwellTime_dict, print_progress = True)
@@ -569,9 +619,10 @@ display(simul_trip_result_sample[(simul_trip_result_sample['uniqID'] == 7) & (si
 | 208 |        7 | MidAdult   | 550790005021 | Monday     |          4 |     0.7 |       1 |     1   |     1   | Home      | Home          | nan   | nan    | 550790001022 | 550790005021 |   5.54624  | Car         |          622 |          8 |        630 |         630 |          810 |      1440 |
 
 
+- Now, the results pertinent to the time, such as TripSTARTT, TripENDT, start_min, Dwell_Time, end_min are all are re-assigned and become more reasonable.
 
-## 2. Results (example)
 
+## 2. Mapping the results (example)
 
 <div style="text-align: center;">
     <img src="/ABTS/image/Result_2020_09_11.png" alt="Figure 2. Spatial patterns of travel counts in destination CBG in Milwaukee (2020/09~11)" width="600"/>
