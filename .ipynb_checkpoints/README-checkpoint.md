@@ -339,21 +339,29 @@ eachTrip_simul_total_sample.head()
 | 639 |       11 | Child      | Wednesday  | Weekday     | Home      |       2 | 550790005021 |     0.7 |       1 |     1   |     1   |
 
 
+- Results: simulated counts of each trip for each individual (agent)
 
 
 
 
 ### 1.2. Trip Chains Builder
-###### trip chains builder에서는~
+###### The objective of this equation is to find, within the original NHTS data, a trip sequence <i>O</i> composed of trips most similar to those in the simulated trip list <i>S<sub>i</sub></i> (e.g., Home, Home, Work, Rec_lei, etc.) for each individual agent in the current simulation. This process is divided into three steps (equations 3-5).
+
+###### The first step is to find the optimal origin sequence <i>O<sub>i</sub></i> most similar to <i>S<sub>i</sub></i>. Here, <i>S<sub>i</sub></i> is a list of the types and counts of an individual's daily trips by day type, where the sequence is not yet specified. We search for the <i>S<sub>i</sub></i> that is most similar to the set of all possible trip sequences from NHTS <i>Q</i>, and designate the trip sequence from <i>Q</i> with the highest similarity score as <i>O<sub>i</sub></i>. To determine similarity, the Kronecker delta function is used, scoring 1 for each matching element between the two lists and 0 for non-matching ones, with the similarity score being the sum of these values.
+
+###### The second step is to randomly assign the trip sequence for <i>S<sub>i</sub></i>. The first and last trips are designated as Home. Then, excluding the initial and final Home trips, the sequence of the remaining trips <i>t</i> in the simulated trip list <i>S</i> for each individual agent is shuffled randomly. As a result, the sequence of the trips, apart from the first and last Home, is determined randomly.
+
+###### The third step is to reassign the sequence of trips in <i>S<sub>i</sub></i> based on <i>O<sub>i</sub></i>. Here, <i>l</i> and <i>j</i> are indices traversing each trip purpose in <i>O</i> and <i>S</i>, respectively. First, it checks whether the trip following <i>O<sub>(i,a,l)</sub></i> in sequence exists in <i>S<sub>(i,a)</sub></i>. If not, it finds the index <i>j</i> in <i>S<sub>(i,a)</sub></i> that matches the trip purpose of <i>O<sub>(i,a,l+1)</sub></i>. Then, the corresponding trip purpose at <i>S<sub>(i,a,j)</sub></i> is assigned to <i>O<sub>(i,a,l)+1</sub></i>, rearranging <i>S<sub>(i,a)</sub></i> accordingly.
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ3_6_tripChain.png" alt="Equation 3-6. Simulated sequence 'S' reassignment based on the most similar origin sequence (O) for individual (i) within age group (a)" height="450"/>
-    <p>Equation 3-6. Simulated sequence 'S' reassignment based on the most similar origin sequence 'O' for individual 'i' within age group 'a'</p>
+    <img src="/ABTS/image/EQ3_6_tripChain.png" alt="Equation 3-5. Simulated sequence 'S' reassignment based on the most similar origin sequence (O) for individual (i) within age group (a)" height="450"/>
+    <p>Equation 3-5. Simulated sequence 'S' reassignment based on the most similar origin sequence 'O' for individual 'i' within age group 'a'</p>
 </div>
 
 
 
 #### 1.2.0. Data staging
+###### Here, again, you run this once and use the result for simulating multiple travel schedules.
 
 ##### 1.2.0.1. Create trip seqeunce of individuals using origin NHTS data
 
@@ -394,14 +402,14 @@ display(simul_trip_sequence_sample[(simul_trip_sequence_sample['uniqID'] == 7) &
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 7. Dwell time of all trips for each individual" height="180"/>
-    <p>Equation 7. Dwell time of all trips for each individual</p>
+    <img src="/ABTS/image/EQ7_dwellTime.png" alt="Equation 6. Dwell time of all trips for each individual" height="180"/>
+    <p>Equation 6. Dwell time of all trips for each individual</p>
 </div>
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 8. Trip start time for each individual" height="90"/>
-    <p>Equation 8. Trip start time for each individual</p>
+    <img src="/ABTS/image/EQ8_tripStartTime.png" alt="Equation 7. Trip start time for each individual" height="90"/>
+    <p>Equation 7. Trip start time for each individual</p>
 </div>
 
 
@@ -447,8 +455,8 @@ display(simul_trip_start_time_sample[(simul_trip_start_time_sample['uniqID'] == 
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ9_tripmode.png" alt="Equation 9. Assign Trip mode applying round trip" height="225"/>
-    <p>Equation 9. Assign Trip mode applying round trip</p>
+    <img src="/ABTS/image/EQ9_tripmode.png" alt="Equation 8. Assign Trip mode applying round trip" height="225"/>
+    <p>Equation 8. Assign Trip mode applying round trip</p>
 </div>
 
 ```python
@@ -471,8 +479,8 @@ display(simul_trip_mode_sample[(simul_trip_mode_sample['uniqID'] == 7) & (simul_
 
 
 <div style="text-align: center;">
-    <img src="/ABTS/image/EQ10_assignDest.png" alt="Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'" height="300"/>
-    <p>Equation 10. Probability of trips 't' from origin area 'A' to destination 'D'</p>
+    <img src="/ABTS/image/EQ10_assignDest.png" alt="Equation 9. Probability of trips 't' from origin area 'A' to destination 'D'" height="300"/>
+    <p>Equation 9. Probability of trips 't' from origin area 'A' to destination 'D'</p>
 </div>
 
 
