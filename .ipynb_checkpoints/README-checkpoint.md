@@ -15,7 +15,7 @@ import ABTS as abts
 
 - Choi, M., & Hohl. A. (2024). Derivation of Spatiotemporal Risk Areas and Travel Behaviors During Pandemic Through Reverse Estimation of Mobility Patterns by Agent-Based Modeling, Spatial and Spatio-temporal Epidemiology. Under review (1st round)
 
-- Choi, M., Seo, J., & Hohl. A. (2024). ABTS: Agent-Based Travel Scheduler. In process
+- Choi, M., Seo, J., & Hohl. A. (2024). ABTS: Agent-Based Travel Scheduler. In progress
 
 
 ###### Figure 1 shows the framework of ABTS. ABTS utilizes a three-step process to generate the initial outcome of individual travel schedules: 1) Comprehensive Travel Classifier, 2) Land-Use Estimator, and 3) Individual Travel Schedule. The output of ABTS includes individual daily trip chains that consists of each trip purpose, occurrence time, destination, duration, and mode, tailored according to age group.
@@ -623,12 +623,15 @@ display(simul_trip_result_sample[(simul_trip_result_sample['uniqID'] == 7) & (si
 
 
 ## 2. Mapping the results (example)
+###### Figure 2 depicts a choropleth map based on the number of trips originating from approximately 50 CBGs (Study area) during the month of September. It shows all trip destinations (CBG) mapped according to the volume of trips.
+
+###### Following this, Figure 3 maps the workplaces of only the Adult and Mid-adult age groups for the months of September to November 2020. This was achieved by filtering for Work trips and mapping the count values at each destination (CBG). In this manner, we can decompose and examine the travel within our area of interest by trip purpose and age group through the ABTS.
+
 
 <div style="text-align: center;">
     <img src="/ABTS/image/Result_2020_09_11.png" alt="Figure 2. Spatial patterns of travel counts in destination CBG in Milwaukee (2020/09~11)" width="600"/>
     <p>Figure 2. Spatial patterns of travel counts in destination CBG in Milwaukee (2020/09)</p>
 </div>
-
 
 
 <div style="text-align: center;">
@@ -648,5 +651,5 @@ display(simul_trip_result_sample[(simul_trip_result_sample['uniqID'] == 7) & (si
 
 # Author
 
-- **Author:** Moongi Choi
+- **Author:** Moongi Choi, Alexander Hohl
 - **Email:** u1316663@utah.edu
