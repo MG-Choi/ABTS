@@ -651,5 +651,4 @@ display(simul_trip_result_sample[(simul_trip_result_sample['uniqID'] == 7) & (si
 
 # Author
 
-- **Author:** Moongi Choi, Alexander Hohl
-- **Email:** u1316663@utah.edu
+- **Author:** Moongi Choi (u1316663@utah.edu), Jiwoo Seo (jiwoo.seo@utah.edu), Alexander Hohl (u6025895@utah.edu)
