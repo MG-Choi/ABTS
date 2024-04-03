@@ -11,7 +11,7 @@ ABTS / version 0.0.3
 import ABTS as abts
 ```
 
-###### 이 알고리즘은 개개인의 travel schedule을 예측하는 시뮬레이션으로, ABTS (Agent-Based Travel Scheduler)이다. 파라미터 4가지를 이용하여 예측을 하며, 기존의 OD데이터를 이용하여 과거의 travel을 trip purpose, age 별로 decompose할 수 있고, 미래 예측 역시 가능하다. 모델에 대한 더 자세한 description은 다음의 두 논문에서 찾을 수 있다.
+###### This algorithm is a simulation model for predicting individual travel schedules, named as ABTS (Agent-Based Travel Scheduler). It utilizes four parameters for prediction, and it can decompose past travel data into trip purposes and age groups using historical OD (Origin-Destination) data. Future predictions are also possible. More detailed descriptions of the model can be found in the following two papers.
 
 - Choi, M., & Hohl. A. (2024). Derivation of Spatiotemporal Risk Areas and Travel Behaviors During Pandemic Through Reverse Estimation of Mobility Patterns by Agent-Based Modeling, Spatial and Spatio-temporal Epidemiology. Under review (1st round)
 
@@ -26,7 +26,8 @@ import ABTS as abts
 </div>
 
 
-###### Comprehensive travel classifier에서는 Table 1과 같이 trip purpose와 trip mode, Age group을 각각의 기준으로 classify한다. 예로 trip purpose는 9개의 Major trip purpose와 13개의 Sub trip purpose로 나눠진다.
+###### In the comprehensive travel classifier, trip purposes, trip modes, and age groups are classified based on their respective criteria as shown in Table 1. For example, trip purposes are divided into 9 major trip purposes and 13 sub trip purposes.
+
 
 <div style="text-align: center;">
     <img src="/ABTS/image/Classification_method_in_ABTS.png" alt="Table 1. Classification in ABTS" width="650"/>
@@ -34,28 +35,28 @@ import ABTS as abts
 </div>
 
 
-###### Land-Use estimator에서는 landuse 데이터를 생성한다. 우리는 landuse를 Table 1의 Sub trip purpose와 같이 13개의 category로 구분하여 shp파일로 구축하였다. 데이터의 출처는 밑의 0. Preprocessing 단계에 기술되어 있다.
+###### In the Land-Use estimator, land-use data is generated. We have constructed the land-use into 13 categories, similar to the sub trip purposes in Table 1, and organized them into shp files. The source of the data is described in the 0. Preprocessing stage below.
 
 ---
 
 
 # Run the model with example data
 
-###### 여기서는 Individual travel schedule generator의 과정을 예제 데이터를 통해 돌려보도록 한다. case area는 Milwaukee County이고 2020년 9월 과거의 travel을 trip purpose별, age별로 decompose하고, 예측하는 과정을 보여주겠다.
+###### Here, we will run the process of the Individual Travel Schedule Generator using example data. The case area is Milwaukee County, and we will demonstrate the process of decomposing and predicting past travels by trip purpose and age for September 2020.
 
 
 ## 0. Preprocessing (using sample simulation in library)
 
-###### 여기서는 ABTS모델을 run하기 위해 NHTS data와 SafeGraph data를 preprocessing하는 과정을 보여준다. 원본 데이터의 경우 밑에 기술된 두 홈페이지에서 다운받을 수 있으며, 본 example에서 사용되는 데이터 역시 해당 사이트에서 다운 받은 데이터이다. 하지만 SafeGraph Neighborhood 데이터의 경우, 현재 타 소스에서 제공되고 있는 것으로 보이며 여전히 접근 가능하다.
+###### Here, we show the preprocessing steps for 'NHTS' data and 'SafeGraph' data in order to run the ABTS model. The original data can be downloaded from the two websites described below, and the data used in this example is also downloaded from these sites. However, it seems that SafeGraph Neighborhood data is currently available from other sources, yet remains accessible.
 
-- NHTS data: 출처는 Federal HighWay Administration (FHWA)이며, 2017년의 National Household Travel Survey 데이터를 사용하였다 (https://nhts.ornl.gov/downloads). 
+- NHTS data: NHTS data: The source is the Federal Highway Administration (FHWA), and it uses data from the 2017 National Household Travel Survey (https://nhts.ornl.gov/downloads). 
 
-- SafeGraph data: 출처는 SafeGraph이며 데이터 이름은 Neighborhood patten이다. (https://docs.safegraph.com/docs/neighborhood-patterns). 이 데이터는 한달동안의 한 주를 랜덤으로 하여 한 주 동안의 사람들의 CBG별 이동을 OD로 나타낸 데이터로, 어떤 CBG에서 어떤 CBG로 얼마만큼의 사람이 이동했는지 기록되어있다. 단, trip purpose나 age 등의 정보는 없으며 단지 count만 수집되었다. 우리는 이 데이터를 이용해 확률모델을 만들어 사람들의 trip purpose별 Destination CBG를 선택하는 알고리즘에 적용하였다.
+- SafeGraph data: The source is SafeGraph, and the data is named Neighborhood Patterns (https://docs.safegraph.com/docs/neighborhood-patterns). This data represents the movements of people by CBG (Census Block Group) as OD (Origin-Destination) for a randomly selected week of the month, recording how many people moved from one CBG to another. However, it does not contain information on trip purposes or ages, collecting only counts. We used this data to create a probabilistic model and applied it to an algorithm for selecting Destination CBGs based on people's trip purposes.
 
 
 ### 0.0. Data import
 
-###### 구글 드라이브에 원본 데이터를 업로드 해 놓았다 (밑 링크). 여기 데이터에는 다음과 같은 데이터가 있다. https://drive.google.com/drive/folders/1YlsNPeTIC-0hjgYNnatuhmIGWQVSvg0-?usp=sharing 
+###### We uploaded the origin data on Google drive (https://drive.google.com/drive/folders/1YlsNPeTIC-0hjgYNnatuhmIGWQVSvg0-?usp=sharing)
 
 - 'trippub.csv': NHTS data (2017)
 - 'Milwaukee_parcels.shp': Milwaukee landuse data
@@ -85,11 +86,11 @@ display(trippub_organized.head())
 |  3 |  30000007 |          2 |      300000072 |         37 |          66 | Seniors     |         1 |       3 |     81.628 |         -9 |       1800 |      2030 |         2 | Weekday       |     201608 | Work          | Car            |
 |  4 |  30000007 |          3 |      300000073 |         37 |          28 | Adult       |         1 |       8 |      2.25  |        330 |        845 |       900 |         2 | Weekday       |     201608 | S_d_r         | Car            |
 
-- PERSONID_new: 새롭게 부여된 unique ID
+- PERSONID_new: Newly assigned unique ID
 - HHSTFIPS: Milwaukee code
 - R_AGE_IMP: Age
 - R_AGE_new: new classification of age group
-- 나머지 column들에 대한 정보는 https://nhts.ornl.gov/downloads 여기서 제공하는 Format library 에서 알 수 있다.
+- Information on the remaining columns can be found in the Format Library provided at https://nhts.ornl.gov/downloads.
 
 
 #### 0.1.2. Preprocess NHTS
@@ -181,8 +182,7 @@ display(prob_trips_2020_09_ws05_wd025.head())
 
 #### 0.2.3. Combine all probability tables by their month
 
-###### W_d와 W_s의 조합들을 미리 많이 만들어놓은 후, 하나로 concatenate하는 과정. 이는 사용자가 W_s와 W_d의 조합을 얼마나 많이 만드느냐에 따라 다르기 때문에 코드를 만들어 놓지 않았다. 여기 예시데이터에서의 조합은 Ws = 0.5, 1.5, 1 / Wd = 0.25, 0.5 , 0.75 로 설정 하여 하나로 합쳐 'prob_2020_09_combined'의 이름으로 만들었다.
-
+###### The process involves pre-creating many combinations of <i>W<sub>s</sub></i> and <i>W<sub>d</sub></i>, and then concatenating them into one. This varies depending on how many combinations of <i>W<sub>s</sub></i> and <i>W<sub>d</sub></i> the user creates, hence no code has been provided for it. In this example, the combinations are set as <i>W<sub>s</sub></i> = 0.5,1.5,1 and <i>W<sub>d</sub></i> = 0.25,0.5,0.75, and they are combined into one under the name 'prob_2020_09_combined'.
 
 
 #### 0.2.4. fill empty probability
@@ -201,14 +201,13 @@ display(prob_2020_09_combined.head())
 | 5417 | 550790067002 | {'550790067001': 1.0} | {'550790067001': 1.0} | {'550791854002': 0.0472, '550791857001': 0.17183,...} | {'550791863002': 0.58456, '550791853001': 0.41544} | {'550791854002': 0.31535, '550790011001': 0.14428,...} | {'550791854002': 0.04848, '550790065003': 0.06424,...} | {'550791402011': 0.00147, '550791401001': 0.00067,...} | {'550791854002': 0.04594, '550791402011': 0.00069,...} | {'550791854002': 0.01903, '550791402011': 0.00057,...} | {'550791854002': 0.01833, '550791402011': 0.0024, ...} | {'550791854002': 0.01252, '550791402011': 0.00038,...} | {'550791854002': 0.05368, '550791402011': 0.00162,...} | {'550791854002': 0.05892, '550791402011': 0.00068,...} | {'550790602001': 0.07441, '550790070004': 0.29906,...} | {'550790141001': 0.73842, '550791853001': 0.26158,...} | {'550790352001': 1.0} | {'550790024001': 0.01743, '550790070004': 0.21597...} | {'550790602001': 0.9111, '550790044001': 0.0889} | {'550791009002': 0.00877, '550790602001': 0.57703,...} | {'550791009002': 0.00354, '550790108002': 0.02074,...} | {'550791009002': 0.00591, '550790108002': 0.07082,...} | {'550791009002': 0.00499, '550790024001': 0.10415,...} | {'550791009002': 0.0049, '550790602001': 0.31572,...} | {'550791009002': 0.00464, '550790024001': 0.02351,...} |  1   | 0.25 |
 | 4588 | 550791007002 | {'550791501002': 9e-05, '550790164002': 0.00022...} | {'550791501002': 9e-05, '550790164002': 0.00022,...} | {'550791401001': 0.00034, '550790125002': 0.02147,...} | {'550791501002': 0.0, '550791008001': 0.01605,...} | {'550791201022': 0.00167, '550791002001': 0.01508,...} | {'550790301002': 0.0, '550791201022': 0.00145,...} | {'550791201022': 0.00345, '550791401001': 7e-05,...} | {'550791009002': 0.39036, '550791201022': 0.00109,...} | {'550791009002': 0.1375, '550790076002': 0.0,...} | {'550791009002': 0.05497, '550790301002': 0.0,...} | {'550791009002': 0.05592, '550790301002': 0.0,...} | {'550791009002': 0.05516, '550790076002': 0.0,...} | {'550791009002': 0.06552, '550791201022': 0.00164,...} | {'550791301002': 0.03874, '550791401001': 0.00045,...} | {'550791008001': 1.0} | {'550791201022': 0.00619, '550791503013': 1e-05,...} | {'550791301002': 0.00017, '550791201022': 0.00331,...} | {'550791201022': 0.00902, '550791401001': 0.00018,...} | {'550791009002': 0.42921, '550791301002': 0.01761,...} | {'550791009002': 0.24759, '550791201022': 0.00241,...} | {'550791009002': 0.04555, '550791301002': 0.00112,...} | {'550791009002': 0.14939, '550791301002': 0.00938,...} | {'550791009002': 0.13345, '550791301002': 0.00096,...} | {'550791009002': 0.10349, '550791301002': 2e-05,...} |  1.5 | 0.75 |
 
-- output dataframe은 weekday와 weekend의 trip purpose별 각 destination으로 갈 확률을 exhibit한다. dataframe의 각 칸의 key는 destination CBG, value는 확률을 의미한다. 이 정해진 확률값은 추후 destination을 결정하는데 사용된다.
-
+- The output dataframe exhibits the probability of going to each destination by trip purpose for both weekdays and weekends. Each cell in the dataframe has a key representing the destination CBG and a value representing the probability. These defined probability values are used later to determine the destination.
 
 ---
 
 
 ## 1. Execution for ABTS
-###### 이 장에서는 위에서 가공된 preprocessed data를 가지고 ABTS를 run하려고 한다. preprocessed data의 경우 본 라이브러리 내에서 제공하므로 import하여 사용하면 된다. 
+###### In this section, we intend to run the ABTS using the preprocessed data mentioned above. Since the preprocessed data is provided within this library, you can just import those example datasets to run the model.
 
 ### 1.0. Data import
 
